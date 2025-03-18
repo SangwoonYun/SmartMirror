@@ -31,6 +31,16 @@ MODULE_LAYOUT = {
             'font-weight': 'bold',
         },
     },
+    'hyu_meal': {
+        'position': 'top-right',
+        'width': '1000px',
+        'height': '500px',
+        'refresh_interval': 3600000,
+        'api_endpoint': '/api/meal-data',
+        'options': {
+            'font-size': '20px',
+            'font-family': 'Arial, sans-serif',
+        },
+    },
     # Additional module configurations can be added here.
 }
-
