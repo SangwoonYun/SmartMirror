@@ -1,0 +1,38 @@
+/* static/css/style.css */
+
+/* General body styling with white text color */
+body {
+    background-color: black;
+    color: white;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Ensure that common text elements have white color */
+h1, h2, h3, h4, h5, h6, p, span, a, td, th, div {
+    color: white;
+}
+
+/* Module container styling */
+.module-container {
+    margin: 10px;
+    padding: 10px;
+}
+
+/* Module content styling */
+.module {
+    margin: 5px;
+    padding: 5px;
+}
+
+/* Table styling for better visibility */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid white;
+}
+

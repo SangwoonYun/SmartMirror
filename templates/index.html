@@ -1,0 +1,14 @@
+<!-- templates/index.html -->
+
+{% extends "base.html" %}
+
+{% block content %}
+    {% for position, module_list in modules.items() %}
+        <div id="{{ position }}" class="module-container">
+            {% for mod in module_list %}
+                {{ mod | safe }}
+            {% endfor %}
+        </div>
+    {% endfor %}
+{% endblock %}
+
