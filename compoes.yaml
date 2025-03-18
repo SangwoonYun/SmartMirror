@@ -1,0 +1,10 @@
+version: "3.8"
+services:
+  web:
+    build:
+      context: https://github.com/SangwoonYun/SmartMirror.git
+      pull: true
+    restart: always
+    ports:
+      - 5000:5000
+networks: {}
