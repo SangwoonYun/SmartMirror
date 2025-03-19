@@ -7,7 +7,9 @@ and renders them into the appropriate positions in the HTML template.
 """
 
 import importlib
+
 from flask import Flask, render_template, jsonify
+
 from config import MODULE_LAYOUT
 
 
@@ -28,10 +30,10 @@ def index():
     for mod_name, mod_config in MODULE_LAYOUT.items():
         try:
             # Dynamically import the module from the modules directory.
-            mod_module = importlib.import_module(f"modules.{mod_name}")
+            mod_module = importlib.import_module(f'modules.{mod_name}')
             mod_instance = mod_module.get_module()
             loaded_modules[mod_name] = mod_instance
-            position = mod_config.get("position", "default")
+            position = mod_config.get('position', 'default')
             # Get the module's HTML content.
             rendered_html = mod_instance.render()
             # Group module output by its configured position.
@@ -40,7 +42,7 @@ def index():
             print(f"Failed to load module '{mod_name}': {e}")
             continue
 
-    return render_template("index.html", modules=modules_by_position)
+    return render_template('index.html', modules=modules_by_position)
 
 
 def register_api_endpoints():
@@ -51,12 +53,12 @@ def register_api_endpoints():
                 # Ensure the module instance is loaded.
                 mod_instance = loaded_modules.get(mod_name)
                 if mod_instance is None:
-                    mod_module = importlib.import_module(f"modules.{mod_name}")
+                    mod_module = importlib.import_module(f'modules.{mod_name}')
                     mod_instance = mod_module.get_module()
                     loaded_modules[mod_name] = mod_instance
 
                 # Check if the module implements an 'api' method.
-                if hasattr(mod_instance, "api") and callable(getattr(mod_instance, "api")):
+                if hasattr(mod_instance, 'api') and callable(getattr(mod_instance, 'api')):
                     endpoint = mod_config['api_endpoint']
 
                     def create_api_func(module_instance):
@@ -67,9 +69,12 @@ def register_api_endpoints():
 
                     api_func = create_api_func(mod_instance)
                     # Register the endpoint with a unique name.
-                    app.add_url_rule(endpoint, endpoint + "_api", api_func)
+                    app.add_url_rule(endpoint, endpoint + '_api', api_func)
                 else:
-                    print(f"Module '{mod_name}' does not implement an 'api' method; skipping API endpoint registration.")
+                    print(
+                        f"Module '{mod_name}' does not implement an 'api' method; "
+                        'skipping API endpoint registration.'
+                    )
             except Exception as e:
                 print(f"Failed to register API endpoint for module '{mod_name}': {e}")
 

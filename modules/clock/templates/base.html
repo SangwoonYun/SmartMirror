@@ -1,0 +1,17 @@
+<div id='clock-module' class='clock' style='{{ style }}'>
+    <span id='clock-time'></span>
+</div>
+<script>
+    var timeFormat = '{{ time_format }}';
+    function formatTime(now, format) {
+        return format.replace('%H', String(now.getHours()).padStart(2, '0'))
+                    .replace('%M', String(now.getMinutes()).padStart(2, '0'))
+                    .replace('%S', String(now.getSeconds()).padStart(2, '0'));
+        }
+    function updateClock() {
+        var now = new Date();
+        document.getElementById('clock-time').innerText = formatTime(now, timeFormat);
+    }
+    updateClock();
+    setInterval(updateClock, {{ refresh_interval }});
+</script>

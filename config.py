@@ -40,6 +40,7 @@ MODULE_LAYOUT = {
         'options': {
             'font-size': '20px',
             'font-family': 'Arial, sans-serif',
+            'text-align': 'center',
         },
     },
     # Additional module configurations can be added here.

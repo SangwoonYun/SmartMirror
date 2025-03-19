@@ -1,5 +1,7 @@
 # modules/clock.py
 
+import os
+
 from module import BaseModule
 from config import MODULE_LAYOUT
 
@@ -22,7 +24,9 @@ class ClockModule(BaseModule):
         return 'clock'
 
     def render(self):
-        """Render the module's UI as an HTML string with real-time clock updates and configurable style.
+        """
+        Render the module's UI as an HTML string with real-time clock updates and configurable
+        style.
 
         Retrieves the text size and font family from the configuration and applies them
         as inline styles to the clock container. Also includes a JavaScript snippet that
@@ -36,36 +40,13 @@ class ClockModule(BaseModule):
         time_format = clock_config.get('time_format', '%H:%M:%S')
         refresh_interval = clock_config.get('refresh_interval', 100)
         options = clock_config.get('options', {})
-        style = " ".join(f"{key}: {value};" for key, value in options.items())
-
-        html = (
-            f"<div id='clock-module' class='clock' style='{style}'>"
-            "  <span id='clock-time'></span>"
-            "</div>"
-            "<script>"
-            "  var timeFormat = '" + time_format + "';"
-            "  function formatTime(now, format) {"
-            "    return format.replace('%H', String(now.getHours()).padStart(2, '0'))"
-            "                 .replace('%M', String(now.getMinutes()).padStart(2, '0'))"
-            "                 .replace('%S', String(now.getSeconds()).padStart(2, '0'));"
-            "  }"
-            "  function updateClock() {"
-            "    var now = new Date();"
-            "    document.getElementById('clock-time').innerText = formatTime(now, timeFormat);"
-            "  }"
-            "  updateClock();"
-            f"  setInterval(updateClock, {refresh_interval});"
-            "</script>"
+        style = ' '.join(f'{key}: {value};' for key, value in options.items())
+        return self.render_template(
+            f'{os.path.dirname(os.path.abspath(__file__))}/templates/base.html',
+            style=style,
+            time_format=time_format,
+            refresh_interval=refresh_interval
         )
-        return html
-
-    def update(self):
-        """Update the module's state.
-
-        This method can be overridden if dynamic updates are required.
-        For this clock module, no additional action is performed.
-        """
-        pass
 
 
 def get_module():
