@@ -49,7 +49,6 @@ def index():
         except Exception as e:
             print(f"Failed to load module '{mod_name}': {e}")
             continue
-    print(modules_by_position)
     return render_template('index.html', modules=modules_by_position)
 
 
