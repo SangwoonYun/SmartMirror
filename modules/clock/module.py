@@ -2,8 +2,8 @@
 
 import os
 
-from module import BaseModule
 from config import MODULE_LAYOUT
+from module import BaseModule
 
 
 class ClockModule(BaseModule):
