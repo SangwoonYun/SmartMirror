@@ -29,9 +29,12 @@ MODULE_LAYOUT = {
             'font-weight': 'bold',
         },
     },
-    'anti_burnin': {
-        'max_step': 30,
-        'refresh_interval': 300000,
+    'weather': {
+        'position': 'top-left',
+        'width': '1000px',
+        'refresh_interval': 1500000,
+        'api_endpoint': '/api/weather-data',
+        'options': {},
     },
     'hyu_meal': {
         'position': 'top-right',
@@ -45,6 +48,10 @@ MODULE_LAYOUT = {
             'text-align': 'center',
             'min-width': '60px',
         },
+    },
+    'anti_burnin': {
+        'max_step': 30,
+        'refresh_interval': 300000,
     },
     # Additional module configurations can be added here.
 }

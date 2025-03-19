@@ -1,0 +1,60 @@
+<div class='weather-module' class='weather' style='{{ style }}'>
+    <table style="border: 0px;">
+        <tr>
+            <td style="border: 0px;">{{ weather_info['location'] }}</td>
+            <td colspan=4 style="border: 0px;">
+                {% for alarm in weather_info['alarm'] %}
+                {% if loop.first %}⚠ {% endif %}{{ alarm }}{% if not loop.last %} · {% endif %}
+                {% endfor %}
+            </td>
+        </tr>
+        <tr>
+            <td rowspan=2 style="border: 0px;"><img id="weather_img" src="{{ weather_info['weather']['now_img'] }}"/></td>
+            <td style="border: 0px;">{{ weather_info['weather']['now_temperature'] }}°C</td>
+            <td style="border: 0px;">습도 {{ weather_info['weather']['quick_humidity'] }}%</td>
+            <td style="border: 0px;">체감 {{ weather_info['weather']['quick_apparent_temperature'] }}°C</td>
+            <td style="border: 0px;">{{ weather_info['weather']['quick_wind_direction'] }} {{ weather_info['weather']['quick_wind_speed'] }}m/s</td>
+        </tr>
+        <tr>
+            <!-- <td>2</td> -->
+            <td style="border: 0px;">{{ weather_info['weather']['now_weather'] }}</td>
+            <td style="border: 0px;">PM10 {{ weather_info['weather']['quick_pm10'] }}</td>
+            <td style="border: 0px;">PM2.5 {{ weather_info['weather']['quick_pm25'] }}</td>
+            <td style="border: 0px;">{{ weather_info['weather']['quick_sun'] }} {{ weather_info['weather']['quick_suntime'] }}</td>
+        </tr>
+    </table>
+    <h4>주간예보</h4>
+    <table style="border: 0px;">
+        <tr>
+            <th colspan=4 style="border: 0px;">오늘</th>
+            <th colspan=4 style="border: 0px;">내일</th>
+        </tr>
+        <tr>
+            {% for weekly in weather_info['weekly'][2:] %}
+            <td style="border: 0px;">
+                <div>
+                    {{ weekly['weekly_day'] }}
+                </div>
+                <div>
+                    {{ weekly['weekly_date'] }}
+                </div>
+                <div>
+                    <img id="weather_img" src="{{ weekly['weekly_am_img'] }}" style="width: 50px;"/>
+                    <img id="weather_img" src="{{ weekly['weekly_ap_img'] }}" style="width: 50px;"/>
+                </div>
+                <div>
+                    <span style="color: blue;">{{ weekly['weekly_low_temperature'] }}°C</span>
+                    /
+                    <span style="color: red;">{{ weekly['weekly_high_temperature'] }}°C</span>
+                </div>
+                <div>
+                    {{ weekly['weekly_am_rainfall'] }}% {{ weekly['weekly_ap_rainfall'] }}%
+                </div>
+            </td>
+            {% endfor %}
+        </tr>
+    </table>
+</div>
+<script>
+
+</script>
