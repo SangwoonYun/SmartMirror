@@ -1,0 +1,10 @@
+<script>
+    function applyAntiBurnInEffect() {
+        const container = document.querySelector('.container');
+        const shiftX = (Math.random() * {{ max_step }} * -1) + 'px';
+        const shiftY = (Math.random() * {{ max_step }} * -1) + 'px';
+
+        container.style.transform = `translate(${shiftX}, ${shiftY})`;
+    }
+    setInterval(applyAntiBurnInEffect, {{ refresh_interval }});
+</script>

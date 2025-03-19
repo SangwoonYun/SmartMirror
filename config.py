@@ -31,6 +31,10 @@ MODULE_LAYOUT = {
             'font-weight': 'bold',
         },
     },
+    'anti_burnin': {
+        'max_step': 30,
+        'refresh_interval': 300000,
+    },
     'hyu_meal': {
         'position': 'top-right',
         'width': '1660px',
