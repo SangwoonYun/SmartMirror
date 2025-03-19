@@ -1,6 +1,8 @@
 # modules/today.py
 
+import os
 from datetime import datetime
+
 from module import BaseModule
 from config import MODULE_LAYOUT
 
@@ -38,30 +40,13 @@ class TodayModule(BaseModule):
         refresh_interval = today_config.get('refresh_interval', 100)
         options = today_config.get('options', {})
         style = " ".join(f"{key}: {value};" for key, value in options.items())
-
-        # Get today's date as a formatted string
         today_date = datetime.now().strftime(date_format)
-
-        html = (
-            f"<div id='today-module' class='today' style='{style}'>"
-            "  <span id='today-text'>Today's Date: " + today_date + "</span>"
-            "</div>"
-            "<script>"
-            "  var dateFormat = '" + date_format + "';"
-            "  function formatDate(now, format) {"
-            "    return format.replace('%Y', now.getFullYear())"
-            "                 .replace('%m', String(now.getMonth() + 1).padStart(2, '0'))"
-            "                 .replace('%d', String(now.getDate()).padStart(2, '0'));"
-            "  }"
-            "  function updateDate() {"
-            "    var now = new Date();"
-            "    document.getElementById('today-text').innerText = formatDate(now, dateFormat);"
-            "  }"
-            "  updateDate();"
-            f"  setInterval(updateDate, {refresh_interval});"
-            "</script>"
+        return self.render_template(
+            f'{os.path.dirname(os.path.abspath(__file__))}/templates/base.html',
+            style=style,
+            date_format=today_date,
+            refresh_interval=refresh_interval
         )
-        return html
 
     def update(self):
         """Update the module's state.
