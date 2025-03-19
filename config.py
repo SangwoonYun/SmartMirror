@@ -10,11 +10,10 @@ MODULE_LAYOUT = {
     'today': {
         'position': 'top-left',
         'width': '1000px',
-        'height': '200px',
-        'date_format': '%Y년 %m월 %d일',
+        'date_format': '%Y년 %m월 %d일 %K요일',
         'refresh_interval': 100,
         'options': {
-            'font-size': '120px',
+            'font-size': '91px',
             'font-family': 'Arial, sans-serif',
             'font-weight': 'bold',
         },
@@ -22,11 +21,10 @@ MODULE_LAYOUT = {
     'clock': {
         'position': 'top-left',
         'width': '1000px',
-        'height': '200px',
-        'time_format': '%H:%M:%S',
+        'time_format': '%P %I:%M:%S',
         'refresh_interval': 100,
         'options': {
-            'font-size': '230px',
+            'font-size': '160px',
             'font-family': 'Arial, sans-serif',
             'font-weight': 'bold',
         },
