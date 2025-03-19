@@ -36,3 +36,62 @@ table, th, td {
     border: 1px solid white;
 }
 
+/* Position */
+#top-left {
+    position:absolute;
+    top: 50px;
+    left: 50px;
+}
+
+#top {
+    position:absolute;
+    top: 50px;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+
+#top-right {
+    position:absolute;
+    top: 50px;
+    right: 50px;
+}
+
+#left {
+    position:absolute;
+    top: 50%;
+    left: 50px;
+    transform: translate(0, -50%);
+}
+
+#center {
+    position:absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#right {
+    position:absolute;
+    top: 50%;
+    right: 50px;
+    transform: translate(0, -50%);
+}
+
+#bottom-left {
+    position:absolute;
+    left: 50px;
+    bottom: 50px;
+}
+
+#bottom {
+    position:absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+    bottom: 50px;
+}
+
+#bottom-right {
+    position:absolute;
+    right: 50px;
+    bottom: 50px;
+}
