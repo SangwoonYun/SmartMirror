@@ -36,12 +36,20 @@ def index():
             position = mod_config.get('position', 'default')
             # Get the module's HTML content.
             rendered_html = mod_instance.render()
+            # Build inline style string based on configuration settings
+            style = ''
+            if 'width' in mod_config:
+                style += f'width: {mod_config['width']};'
+            if 'height' in mod_config:
+                style += f' height: {mod_config['height']};'
+            # Wrap the module's HTML in a container div with the inline style
+            container_html = f"<div class='module' style='{style}'>{rendered_html}</div>"
             # Group module output by its configured position.
-            modules_by_position.setdefault(position, []).append(rendered_html)
+            modules_by_position.setdefault(position, []).append(container_html)
         except Exception as e:
             print(f"Failed to load module '{mod_name}': {e}")
             continue
-
+    print(modules_by_position)
     return render_template('index.html', modules=modules_by_position)
 
 
