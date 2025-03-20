@@ -32,7 +32,7 @@ MODULE_LAYOUT = {
     'weather': {
         'position': 'top-left',
         'width': '1000px',
-        'refresh_interval': 1500000,
+        'refresh_interval': 900000,
         'api_endpoint': '/api/weather-data',
         'options': {},
     },
