@@ -13,7 +13,7 @@ MODULE_LAYOUT = {
         'date_format': '%Y년 %m월 %d일 %K요일',
         'refresh_interval': 100,
         'options': {
-            'font-size': '91px',
+            'font-size': '82px',
             'font-family': 'Arial, sans-serif',
             'font-weight': 'bold',
         },
@@ -24,18 +24,21 @@ MODULE_LAYOUT = {
         'time_format': '%P %I:%M:%S',
         'refresh_interval': 100,
         'options': {
-            'font-size': '160px',
+            'font-size': '150px',
             'font-family': 'Arial, sans-serif',
             'font-weight': 'bold',
         },
     },
-    'anti_burnin': {
-        'max_step': 30,
-        'refresh_interval': 300000,
+    'weather': {
+        'position': 'top-left',
+        'width': '1000px',
+        'refresh_interval': 900000,
+        'api_endpoint': '/api/weather-data',
+        'options': {},
     },
     'hyu_meal': {
         'position': 'top-right',
-        'width': '1660px',
+        'width': '1300px',
         'height': '500px',
         'refresh_interval': 3600000,
         'api_endpoint': '/api/meal-data',
@@ -45,6 +48,10 @@ MODULE_LAYOUT = {
             'text-align': 'center',
             'min-width': '60px',
         },
+    },
+    'anti_burnin': {
+        'max_step': 30,
+        'refresh_interval': 300000,
     },
     # Additional module configurations can be added here.
 }
