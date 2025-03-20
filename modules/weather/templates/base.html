@@ -43,9 +43,9 @@
                         <span id="weather-today_ap_rainfall">오후<br>{{ weather_info['weekly'][0]['weekly_am_rainfall'] }}%</span>
                     </div>
                     <div>
-                        <span id="weather-today_low_temperature" style="color: blue;">{{ weather_info['weekly'][0]['weekly_low_temperature'] }}°C</span>
+                        <span id="weather-today_low_temperature" style="color: #8888ff;">{{ weather_info['weekly'][0]['weekly_low_temperature'] }}°C</span>
                         /
-                        <span id="weather-today_high_temperature" style="color: red;">{{ weather_info['weekly'][0]['weekly_high_temperature'] }}°C</span>
+                        <span id="weather-today_high_temperature" style="color: #ff8888;">{{ weather_info['weekly'][0]['weekly_high_temperature'] }}°C</span>
                     </div>
                 </div>
             </th>
@@ -64,9 +64,9 @@
                         <span id="weather-tomorrow_ap_rainfall">오후<br>{{ weather_info['weekly'][1]['weekly_ap_rainfall'] }}%</span>
                     </div>
                     <div>
-                        <span id="weather-tomorrow_low_temperature" style="color: blue;">{{ weather_info['weekly'][1]['weekly_low_temperature'] }}°C</span>
+                        <span id="weather-tomorrow_low_temperature" style="color: #8888ff;">{{ weather_info['weekly'][1]['weekly_low_temperature'] }}°C</span>
                         /
-                        <span id="weather-tomorrow_high_temperature" style="color: red;">{{ weather_info['weekly'][1]['weekly_high_temperature'] }}°C</span>
+                        <span id="weather-tomorrow_high_temperature" style="color: #ff8888;">{{ weather_info['weekly'][1]['weekly_high_temperature'] }}°C</span>
                     </div>
                 </div>
             </th>
@@ -85,9 +85,9 @@
                     <img id="weather_img" src="{{ weekly['weekly_ap_img'] }}" style="width: 50px;"/>
                 </div>
                 <div>
-                    <span style="color: blue;">{{ weekly['weekly_low_temperature'] }}°C</span>
+                    <span style="color: #8888ff;">{{ weekly['weekly_low_temperature'] }}°C</span>
                     /
-                    <span style="color: red;">{{ weekly['weekly_high_temperature'] }}°C</span>
+                    <span style="color: #ff8888;">{{ weekly['weekly_high_temperature'] }}°C</span>
                 </div>
                 <div>
                     {{ weekly['weekly_am_rainfall'] }}% {{ weekly['weekly_ap_rainfall'] }}%
@@ -185,8 +185,8 @@
                             <img id="weather_img" src="${weekly["weekly_ap_img"]}" style="width: 50px;"/
                         </div>
                         <div>
-                            <span style="color: blue;">${weekly["weekly_low_temperature"]}°C</span> / 
-                            <span style="color: red;">${weekly["weekly_high_temperature"]}°C</span>
+                            <span style="color: #8888ff;">${weekly["weekly_low_temperature"]}°C</span> / 
+                            <span style="color: #ff8888;">${weekly["weekly_high_temperature"]}°C</span>
                         </div>
                         <div>
                             ${weekly['weekly_am_rainfall']}% ${weekly['weekly_ap_rainfall']}%
