@@ -121,9 +121,11 @@ class WeatherModule(APIModule):
         # quick_pm10
         quick_pm10_tag = soup.select_one(selector['quick_pm10'])
         quick_pm10 = quick_pm10_tag.get_text()
+        quick_pm10_color = quick_pm10_tag.get('class', [])
         # quick_pm25
         quick_pm25_tag = soup.select_one(selector['quick_pm25'])
         quick_pm25 = quick_pm25_tag.get_text()
+        quick_pm25_color = quick_pm25_tag.get('class', [])
         # quick_sun
         quick_sun_tag = soup.select_one(selector['quick_sun'])
         quick_sun = quick_sun_tag.get_text()
@@ -139,7 +141,9 @@ class WeatherModule(APIModule):
             'quick_wind_direction': quick_wind_direction,
             'quick_wind_speed': quick_wind_speed,
             'quick_pm10': quick_pm10,
+            'quick_pm10_color': quick_pm10_color,
             'quick_pm25': quick_pm25,
+            'quick_pm25_color': quick_pm25_color,
             'quick_sun': quick_sun,
             'quick_suntime': quick_suntime,
         }

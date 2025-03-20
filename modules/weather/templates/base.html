@@ -1,7 +1,7 @@
 <div class='weather-module' class='weather' style='{{ style }}'>
     <table style="border: 0px;">
         <tr>
-            <td id= "weather-location" style="border: 0px;">{{ weather_info['location'] }}</td>
+            <td id= "weather-location" style="border: 0px; font-weight: bold;">{{ weather_info['location'] }}</td>
             <td id= "weather-alarm" colspan=4 style="border: 0px;">
                 {% for alarm in weather_info['alarm'] %}
                 {% if loop.first %}⚠ {% endif %}{{ alarm }}{% if not loop.last %} · {% endif %}
@@ -12,17 +12,17 @@
             <td rowspan=2 style="border: 0px;">
                 <img id="weather-now_img" src="{{ weather_info['weather']['now_img'] }}"/>
             </td>
-            <td id="weather-now_temperature" style="border: 0px;">{{ weather_info['weather']['now_temperature'] }}°C</td>
-            <td id="weather-quick_humidity" style="border: 0px;">습도 {{ weather_info['weather']['quick_humidity'] }}%</td>
-            <td id="weather-quick_apparent_temperature" style="border: 0px;">체감 {{ weather_info['weather']['quick_apparent_temperature'] }}°C</td>
-            <td id="weather-quick_wind" style="border: 0px;">{{ weather_info['weather']['quick_wind_direction'] }} {{ weather_info['weather']['quick_wind_speed'] }}m/s</td>
+            <td id="weather-now_temperature" style="border: 0px; font-weight: bold;">{{ weather_info['weather']['now_temperature'] }}°C</td>
+            <td style="border: 0px;"><span style="font-weight: bold;">습도</span> <span id="weather-quick_humidity">{{ weather_info['weather']['quick_humidity'] }}</span>%</td>
+            <td style="border: 0px;"><span style="font-weight: bold;">체감</span> <span id="weather-quick_apparent_temperature">{{ weather_info['weather']['quick_apparent_temperature'] }}</span>°C</td>
+            <td style="border: 0px;"><span id="weather-quick_wind_direction" style="font-weight: bold;">{{ weather_info['weather']['quick_wind_direction'] }}</span> <span id="weather-quick_wind_speed">{{ weather_info['weather']['quick_wind_speed'] }}</span>m/s</td>
         </tr>
         <tr>
             <!-- <td>2</td> -->
-            <td id="weather-now_weather" style="border: 0px;">{{ weather_info['weather']['now_weather'] }}</td>
-            <td id="weather-quick_pm10" style="border: 0px;">PM10 {{ weather_info['weather']['quick_pm10'] }} ㎍/㎥</td>
-            <td id="weather-quick_pm25" style="border: 0px;">PM2.5 {{ weather_info['weather']['quick_pm25'] }} ㎍/㎥</td>
-            <td id="weather-quick_sun" style="border: 0px;">{{ weather_info['weather']['quick_sun'] }} {{ weather_info['weather']['quick_suntime'] }}</td>
+            <td id="weather-now_weather" style="border: 0px; font-weight: bold;">{{ weather_info['weather']['now_weather'] }}</td>
+            <td style="border: 0px;"><span style="font-weight: bold;">미세</span> <span id="weather-quick_pm10" class="{% for class in weather_info['weather']['quick_pm10_color'] %}{{ class }}{% endfor %}">{{ weather_info['weather']['quick_pm10'] }}</span></td>
+            <td style="border: 0px;"><span style="font-weight: bold;">초미세</span> <span id="weather-quick_pm25" class="{% for class in weather_info['weather']['quick_pm25_color'] %}{{ class }}{% endfor %}">{{ weather_info['weather']['quick_pm25'] }}</span></td>
+            <td style="border: 0px;"><span id="weather-quick_sun" style="font-weight: bold;">{{ weather_info['weather']['quick_sun'] }}</span> <span id="weather-quick_suntime">{{ weather_info['weather']['quick_suntime'] }}</span></td>
         </tr>
     </table>
     <h4>주간예보</h4>
@@ -129,16 +129,26 @@
                 // weather quick area
                 const quick_humidity = document.getElementById('weather-quick_humidity');
                 const quick_apparent_temperature = document.getElementById('weather-quick_apparent_temperature');
-                const quick_wind = document.getElementById('weather-quick_wind');
+                const quick_wind_direction = document.getElementById('weather-quick_wind_direction');
+                const quick_wind_speed = document.getElementById('weather-quick_wind_speed');
                 const quick_pm10 = document.getElementById('weather-quick_pm10');
                 const quick_pm25 = document.getElementById('weather-quick_pm25');
                 const quick_sun = document.getElementById('weather-quick_sun');
-                quick_humidity.innerHTML = `${data.weather.quick_humidity}%`;
-                quick_apparent_temperature.innerHTML = `${data.weather.quick_apparent_temperature}°C`;
-                quick_wind.innerHTML = `${data.weather.quick_wind_direction} ${data.weather.quick_wind_speed}m/s`;
-                quick_pm10.innerHTML = `${data.weather.quick_pm10} ㎍/㎥`;
-                quick_pm25.innerHTML = `${data.weather.quick_pm25} ㎍/㎥`;
-                quick_sun.innerHTML = `${data.weather.quick_sun} ${data.weather.quick_suntime}`;
+                const quick_suntime = document.getElementById('weather-quick_suntime');
+                quick_humidity.innerHTML = data.weather.quick_humidity;
+                quick_apparent_temperature.innerHTML = data.weather.quick_apparent_temperature;
+                quick_wind_direction.innerHTML = data.weather.quick_wind_direction;
+                quick_wind_speed.innerHTML = data.weather.quick_wind_speed;
+                quick_pm10.innerHTML = data.weather.quick_pm10;
+                data.weather.quick_pm10_color.forEach(cls => {
+                    quick_pm10.class = cls;
+                });
+                quick_pm25.innerHTML = data.weather.quick_pm25;
+                data.weather.quick_pm25_color.forEach(cls => {
+                    quick_pm25.class = cls;
+                });
+                quick_sun.innerHTML = data.weather.quick_sun;
+                quick_suntime.innerHTML = data.weather.quick_suntime;
 
                 // weekly today
                 const today = document.getElementById('weather-today');
@@ -198,3 +208,17 @@
     }
     setInterval(updateWeatherData, {{ refresh_interval }});
 </script>
+<style>
+    .level4_1 {
+        color: #2a74f8;
+    }
+    .level4_2 {
+        color: #00b686;
+    }
+    .level4_3 {
+        color: #e97c00;
+    }
+    .level4_4 {
+        color: #dc0100;
+    }
+</style>
