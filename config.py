@@ -32,9 +32,13 @@ MODULE_LAYOUT = {
     'weather': {
         'position': 'top-left',
         'width': '1000px',
-        'refresh_interval': 900000,
+        'refresh_interval': 3600000,
         'api_endpoint': '/api/weather-data',
-        'options': {},
+        'options': {
+            'font-size': '20px',
+            'font-family': 'Arial, sans-serif',
+            'text-align': 'center',
+        },
     },
     'hyu_meal': {
         'position': 'top-right',

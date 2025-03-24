@@ -38,15 +38,15 @@ class WeatherModule(APIModule):
         """Get the unique name of the module.
 
         Returns:
-            str: The module name 'hyu_meal'.
+            str: The module name 'weather'.
         """
-        return 'hyu_meal'
+        return 'weather'
 
     def render(self):
         """Render the module's UI as an HTML string with dynamic meal updates.
 
         Returns:
-            str: HTML content representing hanyang university's meal.
+            str: HTML content representing weather.
         """
         # Retrieve today's module configuration
         meal_config = MODULE_LAYOUT.get(self.name, {})
