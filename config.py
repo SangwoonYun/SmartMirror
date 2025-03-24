@@ -53,6 +53,19 @@ MODULE_LAYOUT = {
             'min-width': '60px',
         },
     },
+    'kbo': {
+        'position': 'top-right',
+        'width': '1300px',
+        'height': '500px',
+        'refresh_interval': 600000,
+        'api_endpoint': '/api/kbo-data',
+        'options': {
+            'font-size': '20px',
+            'font-family': 'Arial, sans-serif',
+            'text-align': 'center',
+            'min-width': '60px',
+        },
+    },
     'anti_burnin': {
         'max_step': 30,
         'refresh_interval': 300000,
