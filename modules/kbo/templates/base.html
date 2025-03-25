@@ -60,6 +60,7 @@
 
 
                 const gameWlt = {'W': '승', 'L': '패', 'D': '무', null: ''};
+                
                 score_data.forEach(game => {
                     scoreBoard.innerHTML += 
                     `<tr>
@@ -85,13 +86,22 @@
                 requestAnimationFrame(() => {
                     scoreBoard.style.height = window.getComputedStyle(rankBoard).getPropertyValue('height');
                 });
+
+                // Set interval
+                if (score_data.some(game => game['game_status'] === 'PLAY')) {
+                    setTimeout(() => updateKBOData(), 60000);
+                } else {
+                    setTimeout(() => updateKBOData(), {{ refresh_interval }});
+                }
+                console.log('test')
             })
             .catch(error => console.error('Error fetching kbo data:', error));
     }
     function setGameStatus(status, inning) {
         if (status !== "PLAY") {
             const gameStatus = {
-                'BEFORE': '경기전', 'PLAY': '경기중', 'END': '종료', 'CANCEL': '경기취소'
+                'BEFORE': '경기전', 'PLAY': '경기중', 'END': '종료', 'CANCEL': '경기취소',
+                'SUSPENDED': '서스펜', 'POSTPONE': '연기'
             };
             return gameStatus[status];
         }
@@ -109,7 +119,6 @@
         return `${inningNum}회${halfText}`;
     }
     updateKBOData();
-    setInterval(updateKBOData, {{ refresh_interval }});
 </script>
 <style>
     #kbo-score-board {
