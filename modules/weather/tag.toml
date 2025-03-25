@@ -13,10 +13,9 @@ quick_humidity = "#content > div.section_wrap > div.section_center > div.weather
 quick_apparent_temperature = "#content > div.section_wrap > div.section_center > div.weather_area._cnBlockTemplate > div.weather_quick_area > div > div > div > div > div > ul:nth-child(1) > li:nth-child(2) > dl > dd"
 quick_wind_direction = "#content > div.section_wrap > div.section_center > div.weather_area._cnBlockTemplate > div.weather_quick_area > div > div > div > div > div > ul:nth-child(1) > li:nth-child(3) > dl > dt"
 quick_wind_speed = "#content > div.section_wrap > div.section_center > div.weather_area._cnBlockTemplate > div.weather_quick_area > div > div > div > div > div > ul:nth-child(1) > li:nth-child(3) > dl > dd > em"
-quick_pm10 = "#content > div.section_wrap > div.section_center > div.weather_area._cnBlockTemplate > div.weather_quick_area > div > div.scroll_area > div > div.weather_quick._cnCrntWeatherSummary > div > ul:nth-child(3) > li:nth-child(1) > dl > dd"
-quick_pm25 = "#content > div.section_wrap > div.section_center > div.weather_area._cnBlockTemplate > div.weather_quick_area > div > div.scroll_area > div > div.weather_quick._cnCrntWeatherSummary > div > ul:nth-child(3) > li:nth-child(2) > dl > dd"
 quick_sun = "#content > div.section_wrap > div.section_center > div.weather_area._cnBlockTemplate > div.weather_quick_area > div > div > div > div > div > ul:nth-child(3) > li:nth-child(3) > dl > dt"
 quick_suntime = "#content > div.section_wrap > div.section_center > div.weather_area._cnBlockTemplate > div.weather_quick_area > div > div > div > div > div > ul:nth-child(3) > li:nth-child(3) > dl > dd"
+quick_air = "#content > div.section_wrap > div.section_center > div.card.card_dust._cnBlockTemplate > div.card_dust_current > div > div > div > div.card_current_data._cnToggleTarget._cnCurrent.card_slide_item.is-active"
 
 [weekly]
 weekly_list = "#weekly > div.scroll_control.end_left > div > ul > li"
