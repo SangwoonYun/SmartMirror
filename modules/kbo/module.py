@@ -14,8 +14,7 @@ class KBOModule(APIModule):
     """Module that displays KBO with dynamic updates."""
 
     KBO_BASE_URL = (
-        'https://sports.daum.net/prx/hermes/api/game/schedule.json'
-        '?page=1&leagueCode=kbo&seasonKey=2025&toDate='
+        'https://sports.daum.net/prx/hermes/api/game/schedule.json?leagueCode=kbo&toDate='
     )
     KBO_RANK_URL = 'https://sports.daum.net/prx/hermes/api/team/rank.json?leagueCode=kbo'
 
@@ -80,6 +79,7 @@ class KBOModule(APIModule):
             for game in games:
                 game_data = {
                     'game_status': game.get('gameStatus'),
+                    'game_inning': game.get('periodType'),
                     'field_name': game.get('fieldName'),
                     'start_date': game.get('startDate'),
                     'start_time': game.get('startTime'),
