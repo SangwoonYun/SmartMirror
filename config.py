@@ -57,7 +57,7 @@ MODULE_LAYOUT = {
         'position': 'top-right',
         'width': '1300px',
         'height': '500px',
-        'refresh_interval': 300000,
+        'refresh_interval': 600000,
         'api_endpoint': '/api/kbo-data',
         'options': {
             'font-size': '18px',

@@ -60,6 +60,7 @@
 
 
                 const gameWlt = {'W': '승', 'L': '패', 'D': '무', null: ''};
+                
                 score_data.forEach(game => {
                     scoreBoard.innerHTML += 
                     `<tr>
@@ -85,6 +86,14 @@
                 requestAnimationFrame(() => {
                     scoreBoard.style.height = window.getComputedStyle(rankBoard).getPropertyValue('height');
                 });
+
+                // Set interval
+                if (score_data.some(game => game['game_status'] === 'PLAY')) {
+                    setTimeout(() => updateKBOData(), 60000);
+                } else {
+                    setTimeout(() => updateKBOData(), {{ refresh_interval }});
+                }
+                console.log('test')
             })
             .catch(error => console.error('Error fetching kbo data:', error));
     }
@@ -110,7 +119,6 @@
         return `${inningNum}회${halfText}`;
     }
     updateKBOData();
-    setInterval(updateKBOData, {{ refresh_interval }});
 </script>
 <style>
     #kbo-score-board {
