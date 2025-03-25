@@ -91,7 +91,8 @@
     function setGameStatus(status, inning) {
         if (status !== "PLAY") {
             const gameStatus = {
-                'BEFORE': '경기전', 'PLAY': '경기중', 'END': '종료', 'CANCEL': '경기취소'
+                'BEFORE': '경기전', 'PLAY': '경기중', 'END': '종료', 'CANCEL': '경기취소',
+                'SUSPENDED': '서스펜', 'POSTPONE': '연기'
             };
             return gameStatus[status];
         }
