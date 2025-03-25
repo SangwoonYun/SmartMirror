@@ -1,28 +1,24 @@
 <div class='weather-module' class='weather' style='{{ style }}'>
-    <table style="border: 0px; font-size: 150%">
+    <table style="border: 0px; font-size: 150%; table-layout: fixed;">
         <tr>
-            <td id= "weather-location" style="border: 0px; font-weight: bold;">{{ weather_info['location'] }}</td>
-            <td id= "weather-alarm" colspan=4 style="border: 0px;">
-                {% for alarm in weather_info['alarm'] %}
-                {% if loop.first %}⚠ {% endif %}{{ alarm }}{% if not loop.last %} · {% endif %}
-                {% endfor %}
-            </td>
+            <td id="weather-location" style="border: 0px; font-weight: bold;"></td>
+            <td id="weather-alarm" colspan=4 style="border: 0px;"></td>
         </tr>
         <tr>
             <td rowspan=2 style="border: 0px;">
-                <img id="weather-now_img" src="{{ weather_info['weather']['now_img'] }}"/>
+                <img id="weather-now_img" src=""/>
             </td>
-            <td id="weather-now_temperature" style="border: 0px; font-weight: bold;">{{ weather_info['weather']['now_temperature'] }}°C</td>
-            <td style="border: 0px;"><span style="font-weight: bold;">습도</span> <span id="weather-quick_humidity">{{ weather_info['weather']['quick_humidity'] }}</span>%</td>
-            <td style="border: 0px;"><span style="font-weight: bold;">체감</span> <span id="weather-quick_apparent_temperature">{{ weather_info['weather']['quick_apparent_temperature'] }}</span>°C</td>
-            <td style="border: 0px;"><span id="weather-quick_wind_direction" style="font-weight: bold;">{{ weather_info['weather']['quick_wind_direction'] }}</span> <span id="weather-quick_wind_speed">{{ weather_info['weather']['quick_wind_speed'] }}</span>m/s</td>
+            <td id="weather-now_temperature" style="border: 0px; font-weight: bold;"></td>
+            <td style="border: 0px;"><span style="font-weight: bold;">습도</span> <span id="weather-quick_humidity"></span>%</td>
+            <td style="border: 0px;"><span style="font-weight: bold;">체감</span> <span id="weather-quick_apparent_temperature"></span>°C</td>
+            <td style="border: 0px;"><span id="weather-quick_wind_direction" style="font-weight: bold;"></span> <span id="weather-quick_wind_speed"></span>m/s</td>
         </tr>
         <tr>
             <!-- <td>2</td> -->
             <td id="weather-now_weather" style="border: 0px; font-weight: bold;">{{ weather_info['weather']['now_weather'] }}</td>
-            <td style="border: 0px;"><span style="font-weight: bold;">미세</span> <span id="weather-quick_pm10" class="{% for class in weather_info['weather']['quick_pm10_color'] %}{{ class }}{% endfor %}">{{ weather_info['weather']['quick_pm10'] }}</span></td>
-            <td style="border: 0px;"><span style="font-weight: bold;">초미세</span> <span id="weather-quick_pm25" class="{% for class in weather_info['weather']['quick_pm25_color'] %}{{ class }}{% endfor %}">{{ weather_info['weather']['quick_pm25'] }}</span></td>
-            <td style="border: 0px;"><span id="weather-quick_sun" style="font-weight: bold;">{{ weather_info['weather']['quick_sun'] }}</span> <span id="weather-quick_suntime">{{ weather_info['weather']['quick_suntime'] }}</span></td>
+            <td style="border: 0px;"><span style="font-weight: bold;">미세</span> <span id="weather-quick_pm10" class=""></span></td>
+            <td style="border: 0px;"><span style="font-weight: bold;">초미세</span> <span id="weather-quick_pm25" class=""></span></td>
+            <td style="border: 0px;"><span id="weather-quick_sun" style="font-weight: bold;"></span> <span id="weather-quick_suntime"></span></td>
         </tr>
     </table>
     <h4>주간예보</h4>
@@ -30,71 +26,42 @@
         <tr>
             <th colspan=4>
                 <div style="display: grid; grid-template-columns: repeat(4, 1fr); align-items: center;">
-                    <div id="weather-today" style="vertical-align: middle;">
-                        {{ weather_info['weekly'][0]['weekly_day'] }}<br>
-                        {{ weather_info['weekly'][0]['weekly_date'] }}
+                    <div id="weather-today" style="vertical-align: middle;"></div>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); align-items: center;">
+                        <img id="weather-today_am_img" src="" style="width: 60px;"/>
+                        <span id="weather-today_am_rainfall"></span>
                     </div>
                     <div style="display: grid; grid-template-columns: repeat(2, 1fr); align-items: center;">
-                        <img id="weather-today_am_img" src="{{ weather_info['weekly'][0]['weekly_am_img'] }}" style="width: 60px;"/>
-                        <span id="weather-today_am_rainfall">오전<br>{{ weather_info['weekly'][0]['weekly_am_rainfall'] }}%</span>
-                    </div>
-                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); align-items: center;">
-                        <img id="weather-today_ap_img" src="{{ weather_info['weekly'][0]['weekly_ap_img'] }}" style="width: 60px;"/>
-                        <span id="weather-today_ap_rainfall">오후<br>{{ weather_info['weekly'][0]['weekly_am_rainfall'] }}%</span>
+                        <img id="weather-today_ap_img" src="" style="width: 60px;"/>
+                        <span id="weather-today_ap_rainfall"></span>
                     </div>
                     <div>
-                        <span id="weather-today_low_temperature" style="color: #8888ff;">{{ weather_info['weekly'][0]['weekly_low_temperature'] }}°C</span>
+                        <span id="weather-today_low_temperature" style="color: #8888ff;"></span>
                         /
-                        <span id="weather-today_high_temperature" style="color: #ff8888;">{{ weather_info['weekly'][0]['weekly_high_temperature'] }}°C</span>
+                        <span id="weather-today_high_temperature" style="color: #ff8888;"></span>
                     </div>
                 </div>
             </th>
             <th colspan=4>
                 <div style="display: grid; grid-template-columns: repeat(4, 1fr); align-items: center;">
-                    <div id="weather-tomorrow" style="vertical-align: middle;">
-                        {{ weather_info['weekly'][1]['weekly_day'] }}<br>
-                        {{ weather_info['weekly'][1]['weekly_date'] }}
+                    <div id="weather-tomorrow" style="vertical-align: middle;"></div>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); align-items: center;">
+                        <img id="weather-tomorrow_am_img" src="" style="width: 60px;"/>
+                        <span id="weather-tomorrow_am_rainfall"></span>
                     </div>
                     <div style="display: grid; grid-template-columns: repeat(2, 1fr); align-items: center;">
-                        <img id="weather-tomorrow_am_img" src="{{ weather_info['weekly'][1]['weekly_am_img'] }}" style="width: 60px;"/>
-                        <span id="weather-tomorrow_am_rainfall">오전<br>{{ weather_info['weekly'][1]['weekly_am_rainfall'] }}%</span>
-                    </div>
-                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); align-items: center;">
-                        <img id="weather-tomorrow_ap_img" src="{{ weather_info['weekly'][1]['weekly_ap_img'] }}" style="width: 60px;"/>
-                        <span id="weather-tomorrow_ap_rainfall">오후<br>{{ weather_info['weekly'][1]['weekly_ap_rainfall'] }}%</span>
+                        <img id="weather-tomorrow_ap_img" src="" style="width: 60px;"/>
+                        <span id="weather-tomorrow_ap_rainfall"></span>
                     </div>
                     <div>
-                        <span id="weather-tomorrow_low_temperature" style="color: #8888ff;">{{ weather_info['weekly'][1]['weekly_low_temperature'] }}°C</span>
+                        <span id="weather-tomorrow_low_temperature" style="color: #8888ff;"></span>
                         /
-                        <span id="weather-tomorrow_high_temperature" style="color: #ff8888;">{{ weather_info['weekly'][1]['weekly_high_temperature'] }}°C</span>
+                        <span id="weather-tomorrow_high_temperature" style="color: #ff8888;"></span>
                     </div>
                 </div>
             </th>
         </tr>
-        <tr id="weather-weekly_row">
-            {% for weekly in weather_info['weekly'][2:] %}
-            <td style="border: 0px;">
-                <div>
-                    {{ weekly['weekly_day'] }}
-                </div>
-                <div>
-                    {{ weekly['weekly_date'] }}
-                </div>
-                <div>
-                    <img id="weather_img" src="{{ weekly['weekly_am_img'] }}" style="width: 50px;"/>
-                    <img id="weather_img" src="{{ weekly['weekly_ap_img'] }}" style="width: 50px;"/>
-                </div>
-                <div>
-                    <span style="color: #8888ff;">{{ weekly['weekly_low_temperature'] }}°C</span>
-                    /
-                    <span style="color: #ff8888;">{{ weekly['weekly_high_temperature'] }}°C</span>
-                </div>
-                <div>
-                    {{ weekly['weekly_am_rainfall'] }}% {{ weekly['weekly_ap_rainfall'] }}%
-                </div>
-            </td>
-            {% endfor %}
-        </tr>
+        <tr id="weather-weekly_row"></tr>
     </table>
 </div>
 <script>
@@ -107,16 +74,17 @@
                 location.innerHTML = data.location;
 
                 // alarm
-                const alarm = document.getElementById('weather-alarm');
+                alarm_text = ''
                 data.alarm.forEach((alarm_data, index, array) => {
-                    if (index === 0) {
-                        alarm.innerHTML = '⚠'
-                    }
-                    alarm.innerHTML += ` ${alarm_data}`;
-                    if (index !== array.length - 1) {
-                        alarm.innerHTML += ' ·'
-                    }
+                    alarm_text += `⚠ ${alarm_data}&nbsp;&nbsp;&nbsp;&nbsp;`;
                 });
+                const alarm = document.getElementById('weather-alarm');
+                alarm.innerHTML = `<div>${alarm_text}</div>`;
+                if (alarm.scrollWidth > alarm.clientWidth) {
+                    const alarm_content = alarm.querySelector('div');
+                    alarm_content.className = 'animate-scroll';
+                    alarm.appendChild(alarm_content.cloneNode(true))
+                }
 
                 // weather now
                 const now_img = document.getElementById('weather-now_img');
@@ -141,11 +109,11 @@
                 quick_wind_speed.innerHTML = data.weather.quick_wind_speed;
                 quick_pm10.innerHTML = data.weather.quick_pm10;
                 data.weather.quick_pm10_color.forEach(cls => {
-                    quick_pm10.class = cls;
+                    quick_pm10.className = cls;
                 });
                 quick_pm25.innerHTML = data.weather.quick_pm25;
                 data.weather.quick_pm25_color.forEach(cls => {
-                    quick_pm25.class = cls;
+                    quick_pm25.className = cls;
                 });
                 quick_sun.innerHTML = data.weather.quick_sun;
                 quick_suntime.innerHTML = data.weather.quick_suntime;
@@ -176,9 +144,9 @@
                 const tomorrow_high_temperature = document.getElementById('weather-tomorrow_high_temperature');
                 tomorrow.innerHTML =  `${data.weekly[1].weekly_day}<br>${data.weekly[1].weekly_date}`;
                 tomorrow_am_img.src = data.weekly[1].weekly_am_img;
-                today_am_rainfall.innerHTML = `오전<br>${data.weekly[1].weekly_am_rainfall}%`;
+                tomorrow_am_rainfall.innerHTML = `오전<br>${data.weekly[1].weekly_am_rainfall}%`;
                 tomorrow_ap_img.src = data.weekly[1].weekly_ap_img;
-                today_am_rainfall.innerHTML = `오후<br>${data.weekly[1].weekly_ap_rainfall}%`;
+                tomorrow_ap_rainfall.innerHTML = `오후<br>${data.weekly[1].weekly_ap_rainfall}%`;
                 tomorrow_low_temperature.innerHTML = `${data.weekly[1].weekly_low_temperature}°C`;
                 tomorrow_high_temperature.innerHTML = `${data.weekly[1].weekly_high_temperature}°C`;
 
@@ -206,9 +174,35 @@
             })
             .catch(error => console.error('Error fetching weather data:', error));
     }
+    updateWeatherData();
     setInterval(updateWeatherData, {{ refresh_interval }});
 </script>
 <style>
+    #weather-alarm {
+        width: 400%;
+        padding-left: 20%;
+        display: flex;
+        flex: 0 0 auto;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    .animate-scroll {
+        animation: scroll-left 10s linear infinite;
+        padding-right: 3vw;
+    }
+
+    @keyframes scroll-left {
+        0% {
+            -webkit-transform: translate3d(0, 0, 0);
+            transform: translate3d(0, 0, 0);
+        }
+        100% {
+            -webkit-transform: translate3d(-100%, 0, 0);
+            transform: translate3d(-100%, 0, 0);
+        }
+    }
+
     .level4_1 {
         color: #2a74f8;
     }
