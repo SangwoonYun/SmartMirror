@@ -58,7 +58,7 @@
                     <th colspan=9>${formatedDate(score_data[0]['start_date'])}</th>
                 </tr>`;
 
-                const gameStatus = {'BEFORE': '경기전', 'END': '종료', 'CANCEL': '경기취소'};
+
                 const gameWlt = {'W': '승', 'L': '패', 'D': '무', null: ''};
                 score_data.forEach(game => {
                     scoreBoard.innerHTML += 
@@ -71,7 +71,7 @@
                     </td>
                     <td><img src="${game['away_team_img']}" style="width: 50px;"/></td>
                     <td>${game['away_point'] !== null ? game['away_point'] : '-'}</td>
-                    <td>${gameStatus[game['game_status']]}</td>
+                    <td>${setGameStatus(game['game_status'], game['game_inning'])}</td>
                     <td>${game['home_point'] !== null ? game['home_point'] : '-'}</td>
                     <td><img src="${game['home_team_img']}" style="width: 50px;"/></td>
                     <td>
@@ -87,6 +87,26 @@
                 });
             })
             .catch(error => console.error('Error fetching kbo data:', error));
+    }
+    function setGameStatus(status, inning) {
+        if (status !== "PLAY") {
+            const gameStatus = {
+                'BEFORE': '경기전', 'PLAY': '경기중', 'END': '종료', 'CANCEL': '경기취소'
+            };
+            return gameStatus[status];
+        }
+
+        const half = inning[0];
+        const inningNum = parseInt(inning.slice(1), 10);
+
+        let halfText = "";
+        if (half === "T") {
+            halfText = "초";
+        } else if (half === "B") {
+            halfText = "말";
+        }
+        
+        return `${inningNum}회${halfText}`;
     }
     updateKBOData();
     setInterval(updateKBOData, {{ refresh_interval }});
