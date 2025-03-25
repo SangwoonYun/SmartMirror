@@ -75,15 +75,14 @@
                         <td>${team['win']}</td>
                         <td>${team['draw']}</td>
                         <td>${team['loss']}</td>
-                        <td>${team['wpct']}</td>
+                        <td>${team['wpct']*100}%</td>
                         <td>${team['gb']}</td>
                         <td>${team['streak']}</td>
                     </tr>`
                 });
 
                 // Resize
-                const commonHeight = rankBoard.offsetHeight;
-                scoreBoard.style.height = commonHeight + 'px';
+                scoreBoard.style.height = '410px';
             })
             .catch(error => console.error('Error fetching kbo data:', error));
     }
@@ -92,9 +91,9 @@
 </script>
 <style>
     #kbo-score-board {
-        width: 55%;
+        width: 52%;
         float: left;
-        margin-right: 3%;
+        margin-right: 1%;
     }
 
     #kbo-score-board th, td{
@@ -106,7 +105,7 @@
     }
 
     #kbo-rank-board {
-        width: 42%;
+        width: 47%;
         float: left;
         table-layout: fixed;
         white-space: nowrap;

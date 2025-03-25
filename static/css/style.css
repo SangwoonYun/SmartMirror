@@ -12,6 +12,7 @@ body {
 /* Ensure that common text elements have white color */
 h1, h2, h3, h4, h5, h6, p, span, a, td, th, div {
     color: white;
+    margin-bottom: 5px;
 }
 
 /* Module container styling */
