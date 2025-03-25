@@ -2,6 +2,7 @@
 
 import os
 import re
+from time import sleep
 
 import toml
 from bs4 import BeautifulSoup
@@ -21,6 +22,7 @@ class WeatherModule(APIModule):
     """Module that displays Weather with dynamic updates."""
 
     WEATHER_URL = 'https://weather.naver.com'
+    AIR_URL = 'https://weather.naver.com/air'
     chrome_options = Options()
     chrome_options.add_argument('--headless')
     chrome_options.add_argument('--disable-gpu')
@@ -71,12 +73,16 @@ class WeatherModule(APIModule):
         """
         self.driver.get(self.WEATHER_URL)
         self.load_tag_selector(f'{os.path.dirname(os.path.abspath(__file__))}/tag.toml')
-        return {
+        result = {
             'location': self.get_location(),
             'alarm': self.get_alarm(),
-            'weather': self.get_weather(),
             'weekly': self.get_weekly(),
+            'weather': self.get_weather(),
         }
+        # quick_pm10 / quick_pm25
+        quick_pm = self.get_air()
+        result['weather'].update(**quick_pm)
+        return result
 
     def load_tag_selector(self, file_path):
         with open(file_path, 'r') as file:
@@ -118,14 +124,6 @@ class WeatherModule(APIModule):
         # quick_wind_speed
         quick_wind_speed_tag = soup.select_one(selector['quick_wind_speed'])
         quick_wind_speed = quick_wind_speed_tag.get_text()
-        # quick_pm10
-        quick_pm10_tag = soup.select_one(selector['quick_pm10'])
-        quick_pm10 = quick_pm10_tag.get_text()
-        quick_pm10_color = quick_pm10_tag.get('class', [])
-        # quick_pm25
-        quick_pm25_tag = soup.select_one(selector['quick_pm25'])
-        quick_pm25 = quick_pm25_tag.get_text()
-        quick_pm25_color = quick_pm25_tag.get('class', [])
         # quick_sun
         quick_sun_tag = soup.select_one(selector['quick_sun'])
         quick_sun = quick_sun_tag.get_text()
@@ -140,10 +138,6 @@ class WeatherModule(APIModule):
             'quick_apparent_temperature': quick_apparent_temperature,
             'quick_wind_direction': quick_wind_direction,
             'quick_wind_speed': quick_wind_speed,
-            'quick_pm10': quick_pm10,
-            'quick_pm10_color': quick_pm10_color,
-            'quick_pm25': quick_pm25,
-            'quick_pm25_color': quick_pm25_color,
             'quick_sun': quick_sun,
             'quick_suntime': quick_suntime,
         }
@@ -168,6 +162,24 @@ class WeatherModule(APIModule):
             )
             weekly.append(data)
         return weekly
+    
+    def get_air(self):
+        self.driver.get(self.AIR_URL)
+        air_selector = self.selector['weather']['quick_air']
+        soup = self.get_soup(air_selector)
+        tags = soup.find_all('div', class_='card_data_item')
+        # PM 10
+        pm10 = tags[0].find('span', class_='dount_value_text').get_text()
+        pm10_color = tags[0].get('class', [])
+        # PM 2.5
+        pm25 = tags[1].find('span', class_='dount_value_text').get_text()
+        pm25_color = tags[1].get('class', [])
+        return {
+            'quick_pm10': pm10,
+            'quick_pm10_color': pm10_color,
+            'quick_pm25': pm25,
+            'quick_pm25_color': pm25_color,
+        }
 
     def get_soup(self, css_selector):
         WebDriverWait(self.driver, timeout=30).until(
