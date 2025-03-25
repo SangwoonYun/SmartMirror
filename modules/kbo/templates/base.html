@@ -1,0 +1,116 @@
+<div class='kbo-module' class='kbo' style='{{ style }}'>
+    <h3>KBO</h3>
+    <table id='kbo-score-board' style='border: 0px;'></table>
+    <table id='kbo-rank-board' style='border: 0px;'></table>
+</div>
+<script>
+    function formatedDate(dateStr) {
+        const year = dateStr.slice(0, 4);
+        const month = dateStr.slice(4, 6);
+        const day = dateStr.slice(6, 8);
+
+        const date = new Date(`${year}-${month}-${day}`);
+        const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+        const weekdayKorean = weekdays[date.getDay()];
+
+        return `${month}월 ${day}일 (${weekdayKorean})`;
+    }
+    function updateKBOData() {
+        fetch('/api/kbo-data')
+            .then(response => response.json())
+            .then(data => {
+                // Rank Board
+                const rankBoard = document.getElementById('kbo-rank-board');
+                const rank_data = data['rank']
+                rankBoard.innerHTML = 
+                `<tr>
+                    <th>순위</th>
+                    <th colspan=2>팀</th>
+                    <th>경기</th>
+                    <th>승</th>
+                    <th>무</th>
+                    <th>패</th>
+                    <th>승률</th>
+                    <th>게임차</th>
+                    <th>연속</th>
+                </tr>`;
+                rank_data.forEach(team => {
+                    rankBoard.innerHTML += 
+                    `<tr>
+                        <td>${team['rank']}</td>
+                        <td><img src="${team['team_img']}" style="width: 30px;"/></td>
+                        <td>${team['team_name']}</td>
+                        <td>${team['game']}</td>
+                        <td>${team['win']}</td>
+                        <td>${team['draw']}</td>
+                        <td>${team['loss']}</td>
+                        <td>${team['wpct']*100}%</td>
+                        <td>${team['gb']}</td>
+                        <td>${team['streak']}</td>
+                    </tr>`
+                });
+
+                // Score Board
+                const scoreBoard = document.getElementById('kbo-score-board');
+                const score_data = data['score']
+                scoreBoard.innerHTML = 
+                `<tr>
+                    <th colspan=9>${formatedDate(score_data[0]['start_date'])}</th>
+                </tr>`;
+
+                const gameStatus = {'BEFORE': '경기전', 'END': '종료', 'CANCEL': '경기취소'};
+                const gameWlt = {'W': '승', 'L': '패', 'D': '무', null: ''};
+                score_data.forEach(game => {
+                    scoreBoard.innerHTML += 
+                    `<tr>
+                    <td>${game['start_time'].slice(0,2)}:${game['start_time'].slice(2,4)}</td>
+                    <td>${game['field_name']}</td>
+                    <td>
+                        <p>${game['away_team']}</p>
+                        <p style='font-size: 70%'>${game['away_sp']} ${gameWlt[game['away_wlt']]}</p>
+                    </td>
+                    <td><img src="${game['away_team_img']}" style="width: 50px;"/></td>
+                    <td>${game['away_point'] !== null ? game['away_point'] : '-'}</td>
+                    <td>${gameStatus[game['game_status']]}</td>
+                    <td>${game['home_point'] !== null ? game['home_point'] : '-'}</td>
+                    <td><img src="${game['home_team_img']}" style="width: 50px;"/></td>
+                    <td>
+                        <p>${game['home_team']}</p>
+                        <p style='font-size: 70%'>${gameWlt[game['home_wlt']]} ${game['home_sp']}</p>
+                    </td>
+                    </tr>`;
+                });
+
+                // Resize
+                requestAnimationFrame(() => {
+                    scoreBoard.style.height = window.getComputedStyle(rankBoard).getPropertyValue('height');
+                });
+            })
+            .catch(error => console.error('Error fetching kbo data:', error));
+    }
+    updateKBOData();
+    setInterval(updateKBOData, {{ refresh_interval }});
+</script>
+<style>
+    #kbo-score-board {
+        width: 52%;
+        float: left;
+        margin-right: 1%;
+    }
+
+    #kbo-score-board th, td{
+        min-width: 30px;
+    }
+
+    #kbo-score-board td p {
+        margin: 0;
+    }
+
+    #kbo-rank-board {
+        width: 47%;
+        float: left;
+        table-layout: fixed;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+</style>

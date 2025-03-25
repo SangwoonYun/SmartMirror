@@ -43,11 +43,24 @@ MODULE_LAYOUT = {
     'hyu_meal': {
         'position': 'top-right',
         'width': '1300px',
-        'height': '500px',
+        'height': '400px',
         'refresh_interval': 3600000,
         'api_endpoint': '/api/meal-data',
         'options': {
-            'font-size': '20px',
+            'font-size': '18px',
+            'font-family': 'Arial, sans-serif',
+            'text-align': 'center',
+            'min-width': '60px',
+        },
+    },
+    'kbo': {
+        'position': 'top-right',
+        'width': '1300px',
+        'height': '500px',
+        'refresh_interval': 600000,
+        'api_endpoint': '/api/kbo-data',
+        'options': {
+            'font-size': '18px',
             'font-family': 'Arial, sans-serif',
             'text-align': 'center',
             'min-width': '60px',
