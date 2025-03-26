@@ -44,7 +44,7 @@
                         <td>${team['win']}</td>
                         <td>${team['draw']}</td>
                         <td>${team['loss']}</td>
-                        <td>${team['wpct']*100}%</td>
+                        <td>${(team['wpct']*100).toFixed(1)}%</td>
                         <td>${team['gb']}</td>
                         <td>${team['streak']}</td>
                     </tr>`
@@ -68,7 +68,14 @@
                     <td>${game['field_name']}</td>
                     <td>
                         <p>${game['away_team']}</p>
-                        <p style='font-size: 70%'>${game['away_sp']} ${gameWlt[game['away_wlt']]}</p>
+                        <p style='font-size: 70%'>
+                            ${
+                                game['game_status'] !== 'END' ? game['away_sp']
+                                : game['away_wlt'] === 'W' ? game['win_pitcher']
+                                : game['away_wlt'] === 'L' ? game['lose_pitcher']
+                                : ''
+                            } ${gameWlt[game['away_wlt']]}
+                        </p>
                     </td>
                     <td><img src="${game['away_team_img']}" style="width: 50px;"/></td>
                     <td>${game['away_point'] !== null ? game['away_point'] : '-'}</td>
@@ -77,7 +84,14 @@
                     <td><img src="${game['home_team_img']}" style="width: 50px;"/></td>
                     <td>
                         <p>${game['home_team']}</p>
-                        <p style='font-size: 70%'>${gameWlt[game['home_wlt']]} ${game['home_sp']}</p>
+                        <p style='font-size: 70%'>
+                            ${gameWlt[game['home_wlt']]} ${
+                                game['game_status'] !== 'END' ? game['home_sp']
+                                : game['home_wlt'] === 'W' ? game['win_pitcher']
+                                : game['home_wlt'] === 'L' ? game['lose_pitcher']
+                                : ''
+                            }
+                        </p>
                     </td>
                     </tr>`;
                 });
