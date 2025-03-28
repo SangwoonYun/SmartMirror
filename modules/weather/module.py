@@ -31,6 +31,9 @@ class WeatherModule(APIModule):
     driver = webdriver.Chrome(
         service=Service(ChromeDriverManager().install()), options=chrome_options
     )
+    air_driver = webdriver.Chrome(
+        service=Service(ChromeDriverManager().install()), options=chrome_options
+    )
     selector: dict = {}
     img_rex = re.compile(r'^ico(?:_animation)?_wt\d+$')
     temp_rex = re.compile(r'-?(?:\d+\.\d+|\d+)')
@@ -58,8 +61,7 @@ class WeatherModule(APIModule):
         return self.render_template(
             f'{os.path.dirname(os.path.abspath(__file__))}/templates/base.html',
             style=style,
-            refresh_interval=refresh_interval,
-            weather_info=self.api()
+            refresh_interval=refresh_interval
         )
 
     def api(self):
@@ -124,12 +126,9 @@ class WeatherModule(APIModule):
         # quick_wind_speed
         quick_wind_speed_tag = soup.select_one(selector['quick_wind_speed'])
         quick_wind_speed = quick_wind_speed_tag.get_text()
-        # quick_sun
-        quick_sun_tag = soup.select_one(selector['quick_sun'])
-        quick_sun = quick_sun_tag.get_text()
-        # quick_suntime
-        quick_suntime_tag = soup.select_one(selector['quick_suntime'])
-        quick_suntime = quick_suntime_tag.get_text()
+        # quick_uv
+        quick_uv_tag = soup.select_one(selector['quick_uv'])
+        quick_uv = quick_uv_tag.get_text()
         return {
             'now_img': now_img,
             'now_weather': now_weather,
@@ -138,9 +137,23 @@ class WeatherModule(APIModule):
             'quick_apparent_temperature': quick_apparent_temperature,
             'quick_wind_direction': quick_wind_direction,
             'quick_wind_speed': quick_wind_speed,
-            'quick_sun': quick_sun,
-            'quick_suntime': quick_suntime,
+            'quick_uv': quick_uv,
+            'quick_uv_color': self.get_uv_state(quick_uv),
         }
+
+    @staticmethod
+    def get_uv_state(quick_uv):
+        uv = int(quick_uv)
+        if uv >= 11:
+            return 'level4_5'
+        elif uv >= 8:
+            return 'level4_4'
+        elif uv >= 6:
+            return 'level4_3'
+        elif uv >= 3:
+            return 'level4_2'
+        else:
+            return 'level4_1'
 
     def get_weekly(self):
         selector = self.selector['weekly']
@@ -164,10 +177,10 @@ class WeatherModule(APIModule):
         return weekly
     
     def get_air(self):
-        self.driver.get(self.AIR_URL)
-        air_selector = self.selector['weather']['quick_air']
-        soup = self.get_soup(air_selector)
-        tags = soup.find_all('div', class_='card_data_item')
+        self.air_driver.get(self.AIR_URL)
+        soup = self.get_soup(self.selector['weather']['quick_air_check'], driver=self.air_driver)
+        air_soup = soup.select_one(self.selector['weather']['quick_air'])
+        tags = air_soup.find_all('div', class_='card_data_item')
         # PM 10
         pm10 = tags[0].find('span', class_='dount_value_text').get_text()
         pm10_color = tags[0].get('class', [])
@@ -181,11 +194,11 @@ class WeatherModule(APIModule):
             'quick_pm25_color': pm25_color,
         }
 
-    def get_soup(self, css_selector):
-        WebDriverWait(self.driver, timeout=30).until(
+    def get_soup(self, css_selector, driver=driver):
+        WebDriverWait(driver, timeout=30).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, css_selector))
         )
-        return BeautifulSoup(self.driver.page_source, 'html.parser')
+        return BeautifulSoup(driver.page_source, 'html.parser')
 
     def get_img_url(self, class_list):
         img_index = [

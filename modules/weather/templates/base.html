@@ -16,9 +16,9 @@
         <tr>
             <!-- <td>2</td> -->
             <td id="weather-now_weather" style="border: 0px; font-weight: bold;"></td>
+            <td style="border: 0px;"><span style="font-weight: bold;">자외선</span> <span id="weather-quick_uv" class=""></span></td>
             <td style="border: 0px;"><span style="font-weight: bold;">미세</span> <span id="weather-quick_pm10" class=""></span><span style="font-size: 70%;">㎍/㎥</span></td>
             <td style="border: 0px;"><span style="font-weight: bold;">초미세</span> <span id="weather-quick_pm25" class=""></span><span style="font-size: 70%;">㎍/㎥</span></td>
-            <td style="border: 0px;"><span id="weather-quick_sun" style="font-weight: bold;"></span> <span id="weather-quick_suntime"></span></td>
         </tr>
     </table>
     <h4>주간예보</h4>
@@ -99,14 +99,15 @@
                 const quick_apparent_temperature = document.getElementById('weather-quick_apparent_temperature');
                 const quick_wind_direction = document.getElementById('weather-quick_wind_direction');
                 const quick_wind_speed = document.getElementById('weather-quick_wind_speed');
+                const quick_uv = document.getElementById('weather-quick_uv');
                 const quick_pm10 = document.getElementById('weather-quick_pm10');
                 const quick_pm25 = document.getElementById('weather-quick_pm25');
-                const quick_sun = document.getElementById('weather-quick_sun');
-                const quick_suntime = document.getElementById('weather-quick_suntime');
                 quick_humidity.innerHTML = data.weather.quick_humidity;
                 quick_apparent_temperature.innerHTML = data.weather.quick_apparent_temperature;
                 quick_wind_direction.innerHTML = data.weather.quick_wind_direction;
                 quick_wind_speed.innerHTML = data.weather.quick_wind_speed;
+                quick_uv.innerHTML = data.weather.quick_uv;
+                quick_uv.className = data.weather.quick_uv_color;
                 quick_pm10.innerHTML = data.weather.quick_pm10;
                 data.weather.quick_pm10_color.forEach(cls => {
                     quick_pm10.className = cls;
@@ -115,8 +116,6 @@
                 data.weather.quick_pm25_color.forEach(cls => {
                     quick_pm25.className = cls;
                 });
-                quick_sun.innerHTML = data.weather.quick_sun;
-                quick_suntime.innerHTML = data.weather.quick_suntime;
 
                 // weekly today
                 const today = document.getElementById('weather-today');
@@ -214,5 +213,8 @@
     }
     .level4_4 {
         color: #dc0100;
+    }
+    .level4_5 {
+        color: #B567A4;
     }
 </style>
