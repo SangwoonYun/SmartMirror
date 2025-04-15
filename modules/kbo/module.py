@@ -71,7 +71,7 @@ class KBOModule(APIModule):
                 (k for k in data if k.isdigit()), 
                 reverse=True
             )
-            if now >= noon:
+            if (now >= noon) or (now.strftime('%Y%m%d') >= keys[0]):
                 games = data[keys[0]]
             else:
                 games = data[keys[1]]
