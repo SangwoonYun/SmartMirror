@@ -71,7 +71,7 @@ class KBOModule(APIModule):
                 (k for k in data if k.isdigit()), 
                 reverse=True
             )
-            if now >= noon:
+            if (now >= noon) or (now.strftime('%Y%m%d') >= keys[0]):
                 games = data[keys[0]]
             else:
                 games = data[keys[1]]
@@ -93,8 +93,8 @@ class KBOModule(APIModule):
                     'home_team': game.get('homeTeamName'),
                     'home_team_img': game.get('homeTeamImageUrl'),
                     'home_wlt': game.get('homeWlt'),
-                    'win_pitcher': game.get('winPitcher'),
-                    'lose_pitcher': game.get('losePitcher'),
+                    'win_pitcher': game.get('winPitcher', ''),
+                    'lose_pitcher': game.get('losePitcher', ''),
                 }
                 result.append(game_data)
             return result
