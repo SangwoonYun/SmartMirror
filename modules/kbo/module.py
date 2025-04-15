@@ -93,8 +93,8 @@ class KBOModule(APIModule):
                     'home_team': game.get('homeTeamName'),
                     'home_team_img': game.get('homeTeamImageUrl'),
                     'home_wlt': game.get('homeWlt'),
-                    'win_pitcher': game.get('winPitcher', ''),
-                    'lose_pitcher': game.get('losePitcher', ''),
+                    'win_pitcher': game.get('winPitcher'),
+                    'lose_pitcher': game.get('losePitcher'),
                 }
                 result.append(game_data)
             return result

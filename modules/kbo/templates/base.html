@@ -70,9 +70,15 @@
                         <p>${game['away_team']}</p>
                         <p style='font-size: 70%'>
                             ${
-                                game['game_status'] !== 'END' ? game['away_sp']
-                                : game['away_wlt'] === 'W' ? game['win_pitcher']
-                                : game['away_wlt'] === 'L' ? game['lose_pitcher']
+                                game['game_status'] !== 'END' ? (
+                                    game['away_sp'] !== null ? game['away_sp'] : ''
+                                )
+                                : game['away_wlt'] === 'W' ? (
+                                    game['win_pitcher'] !== null ? game['win_pitcher'] : ''
+                                )
+                                : game['away_wlt'] === 'L' ? (
+                                    game['lose_pitcher'] !== null ? game['lose_pitcher'] : ''
+                                )
                                 : ''
                             } ${gameWlt[game['away_wlt']]}
                         </p>
@@ -86,9 +92,15 @@
                         <p>${game['home_team']}</p>
                         <p style='font-size: 70%'>
                             ${gameWlt[game['home_wlt']]} ${
-                                game['game_status'] !== 'END' ? game['home_sp']
-                                : game['home_wlt'] === 'W' ? game['win_pitcher']
-                                : game['home_wlt'] === 'L' ? game['lose_pitcher']
+                                game['game_status'] !== 'END' ? (
+                                    game['home_sp'] !== null ? game['home_sp'] : ''
+                                )
+                                : game['home_wlt'] === 'W' ? (
+                                    game['win_pitcher'] !== null ? game['win_pitcher'] : ''
+                                )
+                                : game['home_wlt'] === 'L' ? (
+                                    game['lose_pitcher'] !== null ? game['lose_pitcher'] : ''
+                                )
                                 : ''
                             }
                         </p>
