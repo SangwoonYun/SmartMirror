@@ -7,6 +7,7 @@ from time import sleep
 import toml
 from bs4 import BeautifulSoup
 from selenium import webdriver
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -73,6 +74,9 @@ class WeatherModule(APIModule):
         Returns:
             dict: API data for the module.
         """
+        if not self.is_driver_alive(self.driver):
+            self.driver.quit()
+            self.driver = self.create_driver()
         self.driver.get(self.WEATHER_URL)
         self.load_tag_selector(f'{os.path.dirname(os.path.abspath(__file__))}/tag.toml')
         result = {
@@ -85,6 +89,19 @@ class WeatherModule(APIModule):
         quick_pm = self.get_air()
         result['weather'].update(**quick_pm)
         return result
+
+    def create_driver(self):
+        return webdriver.Chrome(
+            service=Service(ChromeDriverManager().install()), options=self.chrome_options
+        )
+
+    @staticmethod
+    def is_driver_alive(driver):
+        try:
+            _ = driver.title
+            return True
+        except WebDriverException:
+            return False
 
     def load_tag_selector(self, file_path):
         with open(file_path, 'r') as file:
@@ -177,6 +194,9 @@ class WeatherModule(APIModule):
         return weekly
     
     def get_air(self):
+        if not self.is_driver_alive(self.air_driver):
+            self.air_driver.quit()
+            self.air_driver = self.create_driver()
         self.air_driver.get(self.AIR_URL)
         soup = self.get_soup(self.selector['weather']['quick_air_check'], driver=self.air_driver)
         air_soup = soup.select_one(self.selector['weather']['quick_air'])
@@ -195,9 +215,12 @@ class WeatherModule(APIModule):
         }
 
     def get_soup(self, css_selector, driver=driver):
-        WebDriverWait(driver, timeout=30).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, css_selector))
-        )
+        try:
+            WebDriverWait(driver, timeout=5).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, css_selector))
+            )
+        except WebDriverException:
+            pass
         return BeautifulSoup(driver.page_source, 'html.parser')
 
     def get_img_url(self, class_list):
