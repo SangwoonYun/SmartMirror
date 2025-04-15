@@ -14,7 +14,7 @@ quick_apparent_temperature = "#content > div.section_wrap > div.section_center >
 quick_wind_direction = "#content > div.section_wrap > div.section_center > div.card.card_detail._cnBlockTemplate > div.card_detail_info.scroll_control > div > div > div.card_slide_item.type_basic.type_data--wind > div > dl > dt"
 quick_wind_speed = "#content > div.section_wrap > div.section_center > div.card.card_detail._cnBlockTemplate > div.card_detail_info.scroll_control > div > div > div.card_slide_item.type_basic.type_data--wind > div > dl > dd > strong"
 quick_uv = "#content > div.section_wrap > div.section_center > div.card.card_detail._cnBlockTemplate > div.card_detail_info.scroll_control > div > div > div:nth-child(4) > div > dl > dd > strong"
-quick_air_check = "#content > div.section_wrap > div.section_center > div.card.card_dust._cnBlockTemplate > div.card_dust_current > div > div > div > div.card_current_data._cnToggleTarget._cnCurrent.card_slide_item.is-active > div.card_data_item.level4_2 > div._cnDonutChart._cnCurrentPm10 > strong > span.dount_value_text"
+quick_air_check = "#content > div.section_wrap > div.section_center > div.card.card_dust._cnBlockTemplate > div.card_dust_current > div > div > div > div.card_current_data._cnToggleTarget._cnCurrent.card_slide_item.is-active > div.card_data_item > div._cnDonutChart._cnCurrentPm10 > strong > span.dount_value_text"
 quick_air = "#content > div.section_wrap > div.section_center > div.card.card_dust._cnBlockTemplate > div.card_dust_current > div > div > div > div.card_current_data._cnToggleTarget._cnCurrent.card_slide_item.is-active"
 
 [weekly]
