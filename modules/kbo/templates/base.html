@@ -16,6 +16,7 @@
         return `${month}월 ${day}일 (${weekdayKorean})`;
     }
     function updateKBOData() {
+        let nextInterval = {{ refresh_interval }};
         fetch('/api/kbo-data')
             .then(response => response.json())
             .then(data => {
@@ -114,13 +115,47 @@
                 });
 
                 // Set interval
+                const now = new Date();
+                const nowMinutes = now.getHours() * 60 + now.getMinutes();
+
+                const futureGames = score_data.filter(game => {
+                    const startH = parseInt(game['start_time'].slice(0, 2));
+                    const startM = parseInt(game['start_time'].slice(2, 4));
+                    const gameStartMinutes = startH * 60 + startM;
+                    return gameStartMinutes > nowMinutes;
+                });
+
+                if (futureGames.length > 0) {
+                    const nextGame = futureGames.reduce((earliest, current) => {
+                        const eTime = parseInt(earliest['start_time']);
+                        const cTime = parseInt(current['start_time']);
+                        return cTime < eTime ? current : earliest;
+                    });
+
+                    const startH = parseInt(nextGame['start_time'].slice(0, 2));
+                    const startM = parseInt(nextGame['start_time'].slice(2, 4));
+                    const gameStartTime = new Date(now);
+                    gameStartTime.setHours(startH, startM, 0, 0);
+
+                    const msUntilStart = gameStartTime - now;
+                    const refreshMs = {{ refresh_interval }};
+
+                    if (msUntilStart > 0 && msUntilStart < refreshMs) {
+                        nextInterval = msUntilStart;
+                    }
+                }
+
                 if (score_data.some(game => game['game_status'] === 'PLAY')) {
-                    setTimeout(() => updateKBOData(), 60000);
-                } else {
-                    setTimeout(() => updateKBOData(), {{ refresh_interval }});
+                    nextInterval = 60000;
                 }
             })
-            .catch(error => console.error('Error fetching kbo data:', error));
+            .catch(error => {
+                console.error('Error fetching kbo data:', error);
+                nextInterval = 60000;
+            })
+            .finally(() => {
+                setTimeout(() => updateKBOData(), nextInterval);
+            });
     }
     function setGameStatus(status, inning) {
         if (status !== "PLAY") {
