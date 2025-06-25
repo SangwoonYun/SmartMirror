@@ -155,7 +155,6 @@ class WeatherModule(APIModule):
         else:
             quick_uv_tag = soup.select_one(selector['quick_uv2'])
             quick_uv = quick_uv_tag.get_text()
-        print(quick_uv)
         return {
             'now_img': now_img,
             'now_weather': now_weather,
