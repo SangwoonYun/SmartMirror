@@ -145,7 +145,19 @@
                     }
                 }
 
-                if (score_data.some(game => game['game_status'] === 'PLAY')) {
+                if (
+                    score_data.some(game => game['game_status'] === 'PLAY') ||
+                    score_data.some(game => {
+                        if (game['game_status'] === 'BEFORE') {
+                            const startH = parseInt(game['start_time'].slice(0, 2));
+                            const startM = parseInt(game['start_time'].slice(2, 4));
+                            const gameStartTime = new Date(now);
+                            gameStartTime.setHours(startH, startM, 0, 0);
+                            return gameStartTime < now;
+                        }
+                        return false;
+                    })
+                ) {
                     nextInterval = 60000;
                 }
             })
