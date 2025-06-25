@@ -131,6 +131,10 @@ class WeatherModule(APIModule):
         # now_temperature
         now_temp_tag = soup.select_one(selector['now_temperature'])
         now_temperature = self.parse_decimal(now_temp_tag.get_text(strip=True, separator=' '))
+        # quick_rain
+        quick_rain_tag = soup.select_one(selector['quick_rain'])
+        if quick_rain_tag:
+            now_weather += f' {quick_rain_tag.get_text()}mm'
         # quick_humidity
         quick_humidity_tag = soup.select_one(selector['quick_humidity'])
         quick_humidity = quick_humidity_tag.get_text()
@@ -144,8 +148,14 @@ class WeatherModule(APIModule):
         quick_wind_speed_tag = soup.select_one(selector['quick_wind_speed'])
         quick_wind_speed = quick_wind_speed_tag.get_text()
         # quick_uv
-        quick_uv_tag = soup.select_one(selector['quick_uv'])
-        quick_uv = quick_uv_tag.get_text()
+        quick_uv_check_tag = soup.select_one(selector['quick_uvc'])
+        if quick_uv_check_tag and quick_uv_check_tag.get_text() == 'UV':
+            quick_uv_tag = soup.select_one(selector['quick_uv1'])
+            quick_uv = quick_uv_tag.get_text()
+        else:
+            quick_uv_tag = soup.select_one(selector['quick_uv2'])
+            quick_uv = quick_uv_tag.get_text()
+        print(quick_uv)
         return {
             'now_img': now_img,
             'now_weather': now_weather,
