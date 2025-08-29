@@ -111,13 +111,18 @@ class WeatherModule(APIModule):
         selector = self.selector['location']['location']
         soup = self.get_soup(selector)
         return soup.select_one(selector).get_text()
-    
+
     def get_alarm(self):
         selector = self.selector['alarm']['alarm']
         soup = self.get_soup(selector)
         alarm_list = soup.select(selector)
-        return [alarm.get_text(strip=True) for alarm in alarm_list if alarm.get_text(strip=True)]
-    
+        return [
+            a.get_text(strip=True)
+            for alarm in alarm_list
+            for a in alarm.select('a.common_item_text')
+            if a.get_text(strip=True)
+        ]
+
     def get_weather(self):
         selector = self.selector['weather']
         soup = self.get_soup(selector['now_img'])
