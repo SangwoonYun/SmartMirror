@@ -74,10 +74,8 @@
                 location.innerHTML = data.location;
 
                 // alarm
-                alarm_text = ''
-                data.alarm.forEach((alarm_data, index, array) => {
-                    alarm_text += `⚠ ${alarm_data}&nbsp;&nbsp;&nbsp;&nbsp;`;
-                });
+                alarm_text = `⚠ ${data.alarm.join(' · ')}`;
+                data.alarm.join(' · ')
                 const alarm = document.getElementById('weather-alarm');
                 alarm.innerHTML = `<div>${alarm_text}</div>`;
                 if (alarm.scrollWidth > alarm.clientWidth) {
