@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     unzip \
     xvfb \
+    gnupg2 \
     libxi6 \
     libnss3 \
     libxss1 \
