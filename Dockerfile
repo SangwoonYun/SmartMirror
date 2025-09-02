@@ -1,4 +1,4 @@
-FROM python:3.12
+FROM python:3.12-slim AS base
 
 WORKDIR /app
 
@@ -8,13 +8,13 @@ RUN apt-get update && apt-get install -y \
     unzip \
     xvfb \
     libxi6 \
-    libgconf-2-4 \
     libnss3 \
     libxss1 \
     libappindicator3-1 \
-    libasound2 \
     fonts-liberation \
     && rm -rf /var/lib/apt/lists/*
+
+FROM base AS chrome
 
 RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor > /usr/share/keyrings/google-chrome-keyring.gpg \
     && echo 'deb [signed-by=/usr/share/keyrings/google-chrome-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main' | tee /etc/apt/sources.list.d/google-chrome.list \
@@ -28,9 +28,12 @@ RUN CHROME_DRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com
     rm /tmp/chromedriver.zip && \
     chmod +x /usr/local/bin/chromedriver
 
-COPY . .
+FROM chrome AS final
 
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
 
 ENV DISPLAY=:99
 ENV CHROMEDRIVER_PATH=/usr/local/bin/chromedriver
