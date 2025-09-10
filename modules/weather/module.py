@@ -22,10 +22,10 @@ from config import MODULE_LAYOUT
 class WeatherModule(APIModule):
     """Module that displays Weather with dynamic updates."""
 
-    WEATHER_URL = 'https://weather.naver.com'
+    WEATHER_URL = 'https://weather.naver.com?cpName=ACCUWEATHER'
     AIR_URL = 'https://weather.naver.com/air'
     chrome_options = Options()
-    chrome_options.add_argument('--headless')
+    # chrome_options.add_argument('--headless')
     chrome_options.add_argument('--disable-gpu')
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument('--disable-dev-shm-usage')
@@ -97,6 +97,8 @@ class WeatherModule(APIModule):
 
     @staticmethod
     def is_driver_alive(driver):
+        if driver is None or driver.session_id is None:
+            return False
         try:
             _ = driver.title
             return True
@@ -109,12 +111,12 @@ class WeatherModule(APIModule):
 
     def get_location(self):
         selector = self.selector['location']['location']
-        soup = self.get_soup(selector)
+        soup = self.get_soup(selector, self.driver)
         return soup.select_one(selector).get_text()
 
     def get_alarm(self):
         selector = self.selector['alarm']['alarm']
-        soup = self.get_soup(selector)
+        soup = self.get_soup(selector, self.driver)
         alarm_list = soup.select(selector)
         return [
             a.get_text(strip=True)
@@ -125,7 +127,7 @@ class WeatherModule(APIModule):
 
     def get_weather(self):
         selector = self.selector['weather']
-        soup = self.get_soup(selector['now_img'])
+        soup = self.get_soup(selector['now_img'], self.driver)
         # now_img
         now_img_tag = soup.select_one(selector['now_img'])
         now_img_class_list = now_img_tag.get('class', [])
@@ -148,18 +150,19 @@ class WeatherModule(APIModule):
         quick_apparent_temperature = self.parse_decimal(quick_app_temperature_tag.get_text())
         # quick_wind_direction
         quick_wind_direction_tag = soup.select_one(selector['quick_wind_direction'])
-        quick_wind_direction = quick_wind_direction_tag.get_text()
+        quick_wind_direction = quick_wind_direction_tag.get_text() if quick_wind_direction_tag else ''
         # quick_wind_speed
         quick_wind_speed_tag = soup.select_one(selector['quick_wind_speed'])
-        quick_wind_speed = quick_wind_speed_tag.get_text()
+        quick_wind_speed = quick_wind_speed_tag.get_text() if quick_wind_speed_tag else ''
         # quick_uv
-        quick_uv_check_tag = soup.select_one(selector['quick_uvc'])
-        if quick_uv_check_tag and quick_uv_check_tag.get_text() == 'UV':
-            quick_uv_tag = soup.select_one(selector['quick_uv1'])
-            quick_uv = quick_uv_tag.get_text()
-        else:
-            quick_uv_tag = soup.select_one(selector['quick_uv2'])
-            quick_uv = quick_uv_tag.get_text()
+        quick_base_tag = soup.select_one(selector['quick_tags'])
+        quick_uv = ''
+        for uv_child in quick_base_tag.find_all('div', recursive=False):
+            span = uv_child.find('span')
+            if span and span.get_text(strip=True) == 'UV':
+                quick_uv_tag = uv_child.select_one(selector['quick_uv'])
+                quick_uv = quick_uv_tag.get_text()
+                break
         return {
             'now_img': now_img,
             'now_weather': now_weather,
@@ -188,7 +191,7 @@ class WeatherModule(APIModule):
 
     def get_weekly(self):
         selector = self.selector['weekly']
-        soup = self.get_soup(selector['weekly_list'])
+        soup = self.get_soup(selector['weekly_list'], self.driver)
         weekly: list[dict] = []
         for week in soup.select(selector['weekly_list']):
             data = {}
