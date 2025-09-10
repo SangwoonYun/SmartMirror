@@ -25,7 +25,7 @@ class WeatherModule(APIModule):
     WEATHER_URL = 'https://weather.naver.com?cpName=ACCUWEATHER'
     AIR_URL = 'https://weather.naver.com/air'
     chrome_options = Options()
-    # chrome_options.add_argument('--headless')
+    chrome_options.add_argument('--headless')
     chrome_options.add_argument('--disable-gpu')
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument('--disable-dev-shm-usage')
@@ -97,8 +97,6 @@ class WeatherModule(APIModule):
 
     @staticmethod
     def is_driver_alive(driver):
-        if driver is None or driver.session_id is None:
-            return False
         try:
             _ = driver.title
             return True
