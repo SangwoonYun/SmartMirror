@@ -9,8 +9,11 @@ and renders them into the appropriate positions in the HTML template.
 import importlib
 
 from flask import Flask, render_template, jsonify
+from dotenv import load_dotenv
 
 from config import MODULE_LAYOUT
+
+load_dotenv()
 
 
 app = Flask(__name__)
