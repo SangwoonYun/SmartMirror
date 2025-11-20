@@ -79,6 +79,7 @@ MODULE_LAYOUT = {
         'time_range_hours': 8,
         'period': 900,
         'title': 'AWS CloudWatch',
+        'region': 'us-west-2',
         'dashboard_name': 'Production',
 
         # 옵션 1: AWS에서 대시보드 가져오기 (dashboard_name 사용)
