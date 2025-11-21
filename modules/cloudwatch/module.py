@@ -209,6 +209,9 @@ class CloudWatchModule(APIModule):
         metric_data_queries = []
         metric_labels = {}  # ID -> label, color 매핑 (내부용)
         metric_order = {}  # ID -> 순서 매핑 (JSON 순서 유지용)
+        previous_dimensions = {}  # 점 표기법(.)을 위한 이전 차원 값 저장
+        previous_namespace = None  # 점 표기법(.)을 위한 이전 namespace 저장
+        previous_metric_name = None  # 점 표기법(.)을 위한 이전 metric name 저장
 
         for idx, metric_def in enumerate(metrics):
             if not isinstance(metric_def, list):
@@ -244,21 +247,56 @@ class CloudWatchModule(APIModule):
             namespace = metric_def[0]
             metric_name = metric_def[1]
 
+            # 점 표기법 처리: Namespace와 MetricName
+            if namespace == '.' and previous_namespace:
+                namespace = previous_namespace
+            if metric_name == '.' and previous_metric_name:
+                metric_name = previous_metric_name
+
             # 차원(Dimensions) 파싱
             dimensions = []
             i = 2
             while i < len(metric_def):
                 if isinstance(metric_def[i], str) and i + 1 < len(metric_def):
                     if isinstance(metric_def[i + 1], str):
-                        dimensions.append({
-                            'Name': metric_def[i],
-                            'Value': metric_def[i + 1]
-                        })
+                        dim_name = metric_def[i]
+                        dim_value = metric_def[i + 1]
+
+                        # 점 표기법(.) 처리: 이전 메트릭의 같은 차원 값 사용
+                        if dim_name == '.' and previous_dimensions:
+                            # 이전 차원에서 같은 위치의 차원 이름 가져오기
+                            dim_index = len(dimensions)
+                            if dim_index < len(previous_dimensions):
+                                dim_name = previous_dimensions[dim_index]['Name']
+
+                        if dim_value == '.' and previous_dimensions:
+                            # 이전 차원에서 같은 이름의 차원 값 가져오기
+                            for prev_dim in previous_dimensions:
+                                if prev_dim['Name'] == dim_name:
+                                    dim_value = prev_dim['Value']
+                                    break
+
+                        # 점이 아닌 경우에만 추가
+                        if dim_name != '.' and dim_value != '.':
+                            dimensions.append({
+                                'Name': dim_name,
+                                'Value': dim_value
+                            })
+
                         i += 2
+                    elif isinstance(metric_def[i + 1], dict):
+                        # 다음이 dict이면 차원 파싱 종료
+                        break
                     else:
                         i += 1
                 else:
                     i += 1
+
+            # 현재 메트릭의 정보를 다음 메트릭을 위해 저장 (점 표기법 처리용)
+            if dimensions:
+                previous_dimensions = dimensions
+            previous_namespace = namespace
+            previous_metric_name = metric_name
 
             # 통계 유형, 라벨, visible, id, color 속성 파싱 (마지막 dict에서)
             stat = default_stat
