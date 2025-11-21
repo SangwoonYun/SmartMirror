@@ -12,7 +12,15 @@ class ClockModule(BaseModule):
     This module inherits from BaseModule and implements the render method to return
     an HTML formatted string. The style of the clock (e.g., text size, font family) is
     configurable via the configuration file.
+
+    성능 최적화:
+        - 기본 refresh_interval: 1000ms (초 단위 업데이트)
+        - ISO 계산: lazy 실행 (필요할 때만)
+        - 공통 포맷터 사용: datetime_formatter.js
     """
+
+    # 상수 정의
+    DEFAULT_REFRESH_INTERVAL = 1000  # 1초 (밀리초)
 
     @property
     def name(self):
@@ -38,7 +46,7 @@ class ClockModule(BaseModule):
         # Retrieve the clock configuration
         clock_config = MODULE_LAYOUT.get(self.name, {})
         time_format = clock_config.get('time_format', '%H:%M:%S')
-        refresh_interval = clock_config.get('refresh_interval', 100)
+        refresh_interval = clock_config.get('refresh_interval', self.DEFAULT_REFRESH_INTERVAL)
         options = clock_config.get('options', {})
         style = ' '.join(f'{key}: {value};' for key, value in options.items())
         return self.render_template(
