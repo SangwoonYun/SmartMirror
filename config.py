@@ -82,6 +82,10 @@ MODULE_LAYOUT = {
         'region': 'us-west-2',
         'dashboard_name': 'Production',
 
+        # 병렬 처리 설정
+        'parallel_mode': 'threading',  # 'threading' 또는 'async'
+        'max_workers': 24,  # threading 모드에서 사용할 스레드 수 (기본값: 위젯 개수)
+
         # 옵션 1: AWS에서 대시보드 가져오기 (dashboard_name 사용)
 
         # 옵션 2: 대시보드 JSON을 직접 정의 (dashboard_body 사용)
