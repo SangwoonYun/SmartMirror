@@ -1,10 +1,44 @@
 <script>
-    function applyAntiBurnInEffect() {
-        const container = document.querySelector('.container');
-        const shiftX = (Math.random() * {{ max_step }} * -1) + 'px';
-        const shiftY = (Math.random() * {{ max_step }} * -1) + 'px';
+    (function() {
+        'use strict';
 
-        container.style.transform = `translate(${shiftX}, ${shiftY})`;
-    }
-    setInterval(applyAntiBurnInEffect, {{ refresh_interval }});
+        const MAX_STEP = {{ max_step }};
+        const REFRESH_INTERVAL = {{ refresh_interval }};
+
+        /**
+         * 번인 방지를 위해 화면을 랜덤하게 이동시킵니다.
+         * 모든 방향(상하좌우)으로 랜덤하게 이동합니다.
+         */
+        function applyAntiBurnInEffect() {
+            const container = document.querySelector('.container');
+
+            // 컨테이너가 없으면 종료
+            if (!container) {
+                console.warn('[Anti-Burnin] Container not found');
+                return;
+            }
+
+            // -MAX_STEP ~ +MAX_STEP 범위의 랜덤 값 생성
+            const shiftX = (Math.random() * MAX_STEP * 2 - MAX_STEP) + 'px';
+            const shiftY = (Math.random() * MAX_STEP * 2 - MAX_STEP) + 'px';
+
+            // GPU 가속을 위한 transform 적용
+            container.style.transform = `translate(${shiftX}, ${shiftY})`;
+
+            // 디버그 로그 (필요시 주석 해제)
+            // console.log(`[Anti-Burnin] Shifted to (${shiftX}, ${shiftY})`);
+        }
+
+        // 페이지 로드 즉시 실행
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', applyAntiBurnInEffect);
+        } else {
+            applyAntiBurnInEffect();
+        }
+
+        // 주기적으로 실행
+        setInterval(applyAntiBurnInEffect, REFRESH_INTERVAL);
+
+        console.log(`[Anti-Burnin] Initialized (max_step: ${MAX_STEP}px, interval: ${REFRESH_INTERVAL}ms)`);
+    })();
 </script>
