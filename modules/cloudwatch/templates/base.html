@@ -71,20 +71,21 @@
         });
         widgetsContainer.style.height = maxHeight + 'px';
 
+        // 위젯을 y, x 좌표 순으로 정렬 (항상 동일한 순서 유지)
+        var sortedWidgets = widgets.slice().sort(function(a, b) {
+            if (a.y !== b.y) return a.y - b.y;
+            return a.x - b.x;
+        });
+
         // 기존 위젯 제거하지 않고 업데이트
         if (widgetsContainer.children.length === 0) {
-            // 최초 렌더링 - 위젯을 y 좌표 순으로 정렬
-            var sortedWidgets = widgets.slice().sort(function(a, b) {
-                if (a.y !== b.y) return a.y - b.y;
-                return a.x - b.x;
-            });
-
+            // 최초 렌더링
             sortedWidgets.forEach(function(widget, index) {
                 createWidget(widget, index);
             });
         } else {
-            // 기존 차트 업데이트
-            widgets.forEach(function(widget, index) {
+            // 기존 차트 업데이트 (동일한 정렬 순서 사용)
+            sortedWidgets.forEach(function(widget, index) {
                 updateWidget(widget, index);
             });
         }
@@ -145,7 +146,7 @@
     // 위젯 업데이트
     function updateWidget(widget, index) {
         if (widget.type === 'metric' && widget.data && widget.data.length > 0) {
-            updateChart(widget.data, index);
+            updateChart(widget.data, index, widget.annotations);
         }
     }
 
@@ -303,14 +304,14 @@
     }
 
     // Chart.js 차트 업데이트
-    function updateChart(metricDataList, index) {
+    function updateChart(metricDataList, index, annotationsConfig) {
         var chartKey = 'chart-' + index;
         var chart = charts[chartKey];
 
         if (!chart) return;
 
         // 데이터셋 업데이트
-        chart.data.datasets = metricDataList.map(function(metricData, idx) {
+        var datasets = metricDataList.map(function(metricData, idx) {
             // JSON에서 색상이 정의되어 있으면 사용, 없으면 기본 팔레트 사용
             var color = metricData.color || getColor(idx);
 
@@ -338,6 +339,42 @@
             };
         });
 
+        // 가로 주석선 추가 (annotations.horizontal)
+        if (annotationsConfig && annotationsConfig.horizontal && annotationsConfig.horizontal.length > 0) {
+            // 시간 범위 계산
+            var allTimestamps = [];
+            metricDataList.forEach(function(metricData) {
+                allTimestamps = allTimestamps.concat(metricData.timestamps);
+            });
+
+            if (allTimestamps.length > 0) {
+                var minTime = new Date(Math.min.apply(null, allTimestamps.map(function(t) { return new Date(t).getTime(); })));
+                var maxTime = new Date(Math.max.apply(null, allTimestamps.map(function(t) { return new Date(t).getTime(); })));
+
+                // 각 가로선을 데이터셋으로 추가
+                annotationsConfig.horizontal.forEach(function(annotation) {
+                    datasets.push({
+                        label: annotation.label || 'Threshold',
+                        data: [
+                            { x: minTime, y: annotation.value },
+                            { x: maxTime, y: annotation.value }
+                        ],
+                        borderColor: annotation.color || '#ff6b6b',
+                        backgroundColor: 'transparent',
+                        borderWidth: 1,
+                        borderDash: [5, 5],
+                        fill: false,
+                        pointRadius: 0,
+                        pointHoverRadius: 0,
+                        showLine: true,
+                        hidden: false,
+                        skipLegend: true
+                    });
+                });
+            }
+        }
+
+        chart.data.datasets = datasets;
         chart.update();
     }
 
