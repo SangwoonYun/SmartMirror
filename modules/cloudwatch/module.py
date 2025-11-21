@@ -4,6 +4,7 @@ import os
 import json
 import time
 from datetime import datetime, timedelta
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import boto3
 from botocore.exceptions import ClientError, NoCredentialsError
@@ -107,12 +108,30 @@ class CloudWatchModule(APIModule):
                 'widgets': []
             }
 
-        # 각 위젯의 메트릭 데이터 조회
+        # 각 위젯의 메트릭 데이터 조회 (병렬 처리)
+        widgets = dashboard_def.get('widgets', [])
         widgets_with_data = []
-        for widget in dashboard_def.get('widgets', []):
-            widget_data = self.process_widget(widget)
-            if widget_data:
-                widgets_with_data.append(widget_data)
+
+        # ThreadPoolExecutor로 병렬 처리 (최대 10개 스레드)
+        max_workers = min(10, len(widgets))
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            # 모든 위젯을 병렬로 처리
+            future_to_widget = {
+                executor.submit(self.process_widget, widget): widget
+                for widget in widgets
+            }
+
+            # 완료된 순서대로 결과 수집
+            for future in as_completed(future_to_widget):
+                try:
+                    widget_data = future.result()
+                    if widget_data:
+                        widgets_with_data.append(widget_data)
+                except Exception as e:
+                    print(f"Error processing widget: {e}")
+
+        # 원본 순서대로 정렬 (y, x 좌표 기준)
+        widgets_with_data.sort(key=lambda w: (w.get('y', 0), w.get('x', 0)))
 
         return {
             'widgets': widgets_with_data,
