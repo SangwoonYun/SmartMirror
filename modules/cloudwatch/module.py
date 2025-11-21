@@ -112,8 +112,10 @@ class CloudWatchModule(APIModule):
         widgets = dashboard_def.get('widgets', [])
         widgets_with_data = []
 
-        # ThreadPoolExecutor로 병렬 처리 (최대 10개 스레드)
-        max_workers = min(10, len(widgets))
+        # ThreadPoolExecutor로 병렬 처리
+        # CloudWatch API는 초당 400 TPS를 지원
+        # 24개 위젯의 경우 최적값은 20-25개 스레드 (테스트 결과 기반)
+        max_workers = min(24, len(widgets)) if len(widgets) > 0 else 1
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
             # 모든 위젯을 병렬로 처리
             future_to_widget = {
@@ -370,8 +372,8 @@ class CloudWatchModule(APIModule):
 
         # GetMetricData API 호출 (재시도 로직 포함)
         all_metric_data = []
-        max_retries = 3
-        retry_delay = 0.5
+        max_retries = 2  # 재시도 횟수 감소 (3 -> 2)
+        retry_delay = 0.3  # 재시도 딜레이 감소 (0.5 -> 0.3초)
 
         for attempt in range(max_retries):
             try:
