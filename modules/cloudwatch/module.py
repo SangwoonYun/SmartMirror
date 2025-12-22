@@ -218,7 +218,10 @@ class CloudWatchModule(APIModule):
             period = config.get('period', self.DEFAULT_PERIOD)
             stat = properties.get('stat', 'Average')
 
-            widget_info['data'] = self.get_metric_data(metrics, period, stat)
+            # 메트릭에서 region 추출 (위젯 region보다 우선)
+            region = self._extract_metric_region(metrics, widget_info['region'])
+
+            widget_info['data'] = self.get_metric_data(metrics, period, stat, region)
         else:
             widget_info['data'] = []
 
@@ -235,11 +238,46 @@ class CloudWatchModule(APIModule):
             period = properties.get('period', config.get('period', self.DEFAULT_PERIOD))
             stat = properties.get('stat', 'Average')
 
-            widget_info['data'] = await self._get_metric_data_async(metrics, period, stat)
+            # 메트릭에서 region 추출 (위젯 region보다 우선)
+            region = self._extract_metric_region(metrics, widget_info['region'])
+
+            widget_info['data'] = await self._get_metric_data_async(metrics, period, stat, region)
         else:
             widget_info['data'] = []
 
         return widget_info
+
+    def _extract_metric_region(self, metrics, default_region):
+        """메트릭 리스트에서 region 정보 추출.
+
+        메트릭 속성에 region이 지정되어 있으면 해당 region을 사용하고,
+        없으면 위젯의 기본 region을 사용합니다.
+
+        우선순위:
+        1. 실제 메트릭(namespace가 있는)의 region
+        2. Expression의 region
+        3. 기본 region
+        """
+        expression_region = None
+
+        for metric_def in metrics:
+            if isinstance(metric_def, list) and len(metric_def) > 0:
+                # 실제 메트릭인지 확인 (첫 번째 요소가 문자열이면 메트릭)
+                is_metric = isinstance(metric_def[0], str) and metric_def[0] not in ['...']
+
+                # 메트릭 속성 딕셔너리에서 region 찾기
+                for item in metric_def:
+                    if isinstance(item, dict) and 'region' in item:
+                        if is_metric:
+                            # 실제 메트릭의 region은 즉시 반환
+                            return item['region']
+                        else:
+                            # Expression의 region은 나중을 위해 저장
+                            if expression_region is None:
+                                expression_region = item['region']
+
+        # 실제 메트릭의 region이 없으면 expression region 사용
+        return expression_region if expression_region else default_region
 
     def _extract_widget_info(self, widget):
         """위젯에서 기본 정보 추출."""
@@ -268,7 +306,7 @@ class CloudWatchModule(APIModule):
 
         return widget_info
 
-    async def _get_metric_data_async(self, metrics, period, default_stat='Average'):
+    async def _get_metric_data_async(self, metrics, period, default_stat='Average', region=None):
         """메트릭 데이터를 비동기로 조회 (수학 표현식 지원)."""
         queries, labels, order = self._build_metric_queries(metrics, period, default_stat)
 
@@ -280,9 +318,12 @@ class CloudWatchModule(APIModule):
         end_time = datetime.utcnow()
         start_time = end_time - timedelta(hours=time_range)
 
+        # 위젯별 리전이 지정된 경우 해당 리전 사용
+        target_region = region if region else self.region
+
         for attempt in range(self.MAX_RETRIES):
             try:
-                async with self.session.client('cloudwatch', region_name=self.region) as client:
+                async with self.session.client('cloudwatch', region_name=target_region) as client:
                     response = await client.get_metric_data(
                         MetricDataQueries=queries,
                         StartTime=start_time,
@@ -301,7 +342,7 @@ class CloudWatchModule(APIModule):
 
         return []
 
-    def get_metric_data(self, metrics, period, default_stat='Average'):
+    def get_metric_data(self, metrics, period, default_stat='Average', region=None):
         """메트릭 데이터를 동기로 조회 (수학 표현식 지원)."""
         queries, labels, order = self._build_metric_queries(metrics, period, default_stat)
 
@@ -313,9 +354,15 @@ class CloudWatchModule(APIModule):
         end_time = datetime.utcnow()
         start_time = end_time - timedelta(hours=time_range)
 
+        # 위젯별 리전이 지정된 경우 해당 리전의 클라이언트 사용
+        if region and region != self.region:
+            client = boto3.client('cloudwatch', region_name=region)
+        else:
+            client = self.cloudwatch_client
+
         for attempt in range(self.MAX_RETRIES):
             try:
-                response = self.cloudwatch_client.get_metric_data(
+                response = client.get_metric_data(
                     MetricDataQueries=queries,
                     StartTime=start_time,
                     EndTime=end_time
@@ -365,12 +412,24 @@ class CloudWatchModule(APIModule):
                 continue
 
             # 일반 메트릭 처리
-            if len(metric_def) < 2:
-                continue
+            # '...' 축약 표기법 처리: 이전 메트릭의 모든 정보 재사용
+            if len(metric_def) == 1 and isinstance(metric_def[0], dict):
+                # 속성만 있는 경우, 이전 메트릭 정보 재사용
+                namespace = previous_namespace
+                metric_name = previous_metric_name
+                dimensions = previous_dimensions
+            elif metric_def[0] == '...':
+                # '...' 표기법: 이전 메트릭의 모든 정보 재사용
+                namespace = previous_namespace
+                metric_name = previous_metric_name
+                dimensions = previous_dimensions
+            else:
+                if len(metric_def) < 2:
+                    continue
 
-            namespace, metric_name, dimensions = self._parse_metric_definition(
-                metric_def, previous_namespace, previous_metric_name, previous_dimensions
-            )
+                namespace, metric_name, dimensions = self._parse_metric_definition(
+                    metric_def, previous_namespace, previous_metric_name, previous_dimensions
+                )
 
             # 이전 값 업데이트
             previous_namespace = namespace
@@ -429,14 +488,18 @@ class CloudWatchModule(APIModule):
 
         점 표기법(.)을 지원하여 이전 값을 재사용합니다.
         """
-        namespace = metric_def[0]
-        metric_name = metric_def[1]
+        namespace = metric_def[0] if isinstance(metric_def[0], str) else None
+        metric_name = metric_def[1] if len(metric_def) > 1 else None
 
-        # 점 표기법 처리
-        if namespace == '.' and prev_namespace:
-            namespace = prev_namespace
-        if metric_name == '.' and prev_metric_name:
+        # metric_name이 딕셔너리인 경우 (속성만 있는 경우) 이전 값 사용
+        if isinstance(metric_name, dict):
             metric_name = prev_metric_name
+
+        # 점 표기법 처리 - 점이거나 이전 값이 없으면 이전 값 사용
+        if namespace == '.':
+            namespace = prev_namespace if prev_namespace else namespace
+        if metric_name == '.':
+            metric_name = prev_metric_name if prev_metric_name else metric_name
 
         # 차원 파싱
         dimensions = []
