@@ -44,16 +44,21 @@ class ClockModule(BaseModule):
             str: HTML content representing the clock with real-time updates.
         """
         # Retrieve the clock configuration
-        clock_config = MODULE_LAYOUT.get(self.name, {})
+        # Use instance_name if available (injected by app.py), otherwise fallback to module name
+        config_key = getattr(self, 'instance_name', self.name)
+        clock_config = MODULE_LAYOUT.get(config_key, {})
         time_format = clock_config.get('time_format', '%H:%M:%S')
         refresh_interval = clock_config.get('refresh_interval', self.DEFAULT_REFRESH_INTERVAL)
+        timezone = clock_config.get('timezone', None)
         options = clock_config.get('options', {})
         style = ' '.join(f'{key}: {value};' for key, value in options.items())
         return self.render_template(
             f'{os.path.dirname(os.path.abspath(__file__))}/templates/base.html',
             style=style,
             time_format=time_format,
-            refresh_interval=refresh_interval
+            refresh_interval=refresh_interval,
+            instance_name=config_key,
+            timezone=timezone
         )
 
 

@@ -1,5 +1,5 @@
-<div id='today-module' class='today' style='{{ style }}'>
-    <span id='today-date'></span>
+<div id='{{ instance_name }}-module' class='today' style='{{ style }}'>
+    <span id='{{ instance_name }}-date'></span>
 </div>
 <script src='/modules/common/datetime_formatter.js'></script>
 <script>
@@ -13,7 +13,7 @@
          * 날짜 업데이트
          */
         function updateToday() {
-            const element = document.getElementById('today-date');
+            const element = document.getElementById('{{ instance_name }}-date');
 
             // 요소가 없으면 종료
             if (!element) {

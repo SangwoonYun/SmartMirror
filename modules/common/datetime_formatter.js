@@ -2,16 +2,22 @@
  * 날짜/시간 포맷 공통 유틸리티
  * Clock과 Today 모듈에서 공통으로 사용하는 formatDateTime 함수
  */
-(function(window) {
+(function (window) {
     'use strict';
 
     /**
      * strftime 스타일의 날짜/시간 포맷팅 함수
      * @param {string} format - 포맷 문자열 (%Y, %m, %d, %H, %M, %S 등)
      * @param {Date} date - 포맷할 날짜 객체 (기본값: 현재 시간)
+     * @param {string} timezone - 타임존 (예: 'America/New_York', 'Asia/Seoul')
      * @returns {string} 포맷된 날짜/시간 문자열
      */
-    function formatDateTime(format, date = new Date()) {
+    function formatDateTime(format, date = new Date(), timezone = null) {
+        // 타임존이 지정된 경우, 해당 타임존의 시간으로 날짜 객체 조정
+        if (timezone) {
+            const tzDateString = date.toLocaleString('en-US', { timeZone: timezone });
+            date = new Date(tzDateString);
+        }
         // English weekday and month names (short and full)
         const daysShort = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
         const daysFull = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];

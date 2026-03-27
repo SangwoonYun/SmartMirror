@@ -8,7 +8,7 @@ and renders them into the appropriate positions in the HTML template.
 
 import importlib
 
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, send_from_directory
 from dotenv import load_dotenv
 
 from config import MODULE_LAYOUT
@@ -32,9 +32,18 @@ def index():
     # Iterate through each module specified in the configuration.
     for mod_name, mod_config in MODULE_LAYOUT.items():
         try:
+            # Determine the module package name.
+            # If 'module' key is present, use it; otherwise, use the config key (mod_name).
+            package_name = mod_config.get('module', mod_name)
+            
             # Dynamically import the module from the modules directory.
-            mod_module = importlib.import_module(f'modules.{mod_name}')
+            mod_module = importlib.import_module(f'modules.{package_name}')
             mod_instance = mod_module.get_module()
+            
+            # Inject the instance name (config key) into the module instance.
+            # This allows the module to look up its specific configuration.
+            mod_instance.instance_name = mod_name
+            
             loaded_modules[mod_name] = mod_instance
             position = mod_config.get('position', 'default')
             # Get the module's HTML content.
@@ -53,6 +62,12 @@ def index():
             print(f"Failed to load module '{mod_name}': {e}")
             continue
     return render_template('index.html', modules=modules_by_position)
+
+
+@app.route('/modules/<path:filename>')
+def serve_modules(filename):
+    """Serve static files from the modules directory."""
+    return send_from_directory('modules', filename)
 
 
 def register_api_endpoints():

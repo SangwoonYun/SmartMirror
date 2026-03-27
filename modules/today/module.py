@@ -44,7 +44,9 @@ class TodayModule(BaseModule):
             str: HTML content representing the today with real-time updates.
         """
         # Retrieve the today configuration
-        today_config = MODULE_LAYOUT.get(self.name, {})
+        # Use instance_name if available (injected by app.py), otherwise fallback to module name
+        config_key = getattr(self, 'instance_name', self.name)
+        today_config = MODULE_LAYOUT.get(config_key, {})
         date_format = today_config.get('date_format', '%Y-%m-%d')
         refresh_interval = today_config.get('refresh_interval', self.DEFAULT_REFRESH_INTERVAL)
         options = today_config.get('options', {})
@@ -53,7 +55,8 @@ class TodayModule(BaseModule):
             f'{os.path.dirname(os.path.abspath(__file__))}/templates/base.html',
             style=style,
             date_format=date_format,
-            refresh_interval=refresh_interval
+            refresh_interval=refresh_interval,
+            instance_name=config_key
         )
 
 

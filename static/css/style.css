@@ -7,6 +7,17 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
+    overflow: hidden; /* Hide scrollbars */
+}
+
+/* Hide scrollbar for all browsers */
+body::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
+}
+
+html, body {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
 }
 
 /* Ensure that common text elements have white color */

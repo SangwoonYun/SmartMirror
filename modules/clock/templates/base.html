@@ -1,5 +1,5 @@
-<div id='clock-module' class='clock' style='{{ style }}'>
-    <span id='clock-time'></span>
+<div id='{{ instance_name }}-module' class='clock' style='{{ style }}'>
+    <span id='{{ instance_name }}-time'></span>
 </div>
 <script src='/modules/common/datetime_formatter.js'></script>
 <script>
@@ -8,12 +8,13 @@
 
         const TIME_FORMAT = '{{ time_format }}';
         const REFRESH_INTERVAL = {{ refresh_interval }};
+        const TIMEZONE = '{{ timezone }}' === 'None' ? null : '{{ timezone }}';
 
         /**
          * 시계 시간 업데이트
          */
         function updateClock() {
-            const element = document.getElementById('clock-time');
+            const element = document.getElementById('{{ instance_name }}-time');
 
             // 요소가 없으면 종료
             if (!element) {
@@ -22,7 +23,7 @@
             }
 
             const now = new Date();
-            element.innerText = formatDateTime(TIME_FORMAT, now);
+            element.innerText = formatDateTime(TIME_FORMAT, now, TIMEZONE);
         }
 
         // 페이지 로드 즉시 실행
@@ -35,6 +36,6 @@
         // 주기적으로 실행
         setInterval(updateClock, REFRESH_INTERVAL);
 
-        console.log(`[Clock] Initialized (format: ${TIME_FORMAT}, interval: ${REFRESH_INTERVAL}ms)`);
+        console.log(`[Clock] Initialized (format: ${TIME_FORMAT}, interval: ${REFRESH_INTERVAL}ms, timezone: ${TIMEZONE})`);
     })();
 </script>
